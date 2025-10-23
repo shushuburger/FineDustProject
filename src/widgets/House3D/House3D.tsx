@@ -1,10 +1,14 @@
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment } from '@react-three/drei'
-import { HouseModel } from './HouseModel'
-import { OverlayIcons } from './OverlayIcons'
+import Spline from '@splinetool/react-spline'
+import { useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 import './House3D.css'
 
 export const House3D = () => {
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
+  const isLaptop = useMediaQuery({ minWidth: 1024 })
+
+
   return (
     <main className="house-3d-main">
       <div className="content-header">
@@ -27,43 +31,46 @@ export const House3D = () => {
       </div>
       
       <div className="house-3d-container">
-        <Canvas
-          camera={{ position: [5, 5, 5], fov: 50 }}
-          shadows
-        >
-          <ambientLight intensity={0.6} />
-          <directionalLight
-            position={[10, 10, 5]}
-            intensity={1}
-            castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
-          />
-          <pointLight position={[-10, -10, -10]} intensity={0.5} />
-          
-          <Environment preset="sunset" />
-          
-          <HouseModel />
-          
-          <OrbitControls
-            enablePan={true}
-            enableZoom={true}
-            enableRotate={true}
-            minPolarAngle={Math.PI / 6}
-            maxPolarAngle={Math.PI - Math.PI / 6}
-          />
-        </Canvas>
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="loading-spinner"></div>
+            <p>3D 모델 로딩 중...</p>
+          </div>
+        )}
         
-        <OverlayIcons />
+        {hasError && (
+          <div className="error-overlay">
+            <p>3D 모델을 불러올 수 없습니다.</p>
+            <button onClick={() => window.location.reload()}>새로고침</button>
+          </div>
+        )}
         
-        <div className="view-control">
-          <button className="view-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M3 3H21V21H3V3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M9 9H15V15H9V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
+        <Spline
+          scene="https://prod.spline.design/yngEEta52QDzGews/scene.splinecode"
+          style={{ width: '100%', height: '100%' }}
+          onLoad={() => {
+            console.log('Spline scene loaded successfully')
+            setIsLoading(false)
+          }}
+          onError={(error) => {
+            console.error('Spline loading error:', error)
+            setHasError(true)
+            setIsLoading(false)
+          }}
+        />
+        
+        {isLaptop && (
+          <div className="controls-info">
+            <div className="control-item">
+              <span className="control-key">WASD</span>
+              <span className="control-desc">이동</span>
+            </div>
+            <div className="control-item">
+              <span className="control-key">방향키</span>
+              <span className="control-desc">화면 회전</span>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   )
