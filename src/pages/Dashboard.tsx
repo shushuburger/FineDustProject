@@ -2,8 +2,8 @@ import { House3D } from '@/widgets/House3D'
 import { DustInfo } from '@/widgets/DustInfo/DustInfo'
 import { useMediaQuery } from 'react-responsive'
 import { useState, useEffect } from 'react'
-import { fetchDustData, getCurrentLocation, formatCurrentTime } from '@/shared/api/dustApi'
-import type { DustData, LocationInfo } from '@/shared/types/api'
+import { fetchDustData, getCurrentLocation, formatCurrentTime, getPM10Grade } from '@/shared/api/dustApi'
+import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import './Dashboard.css'
 
 export const Dashboard = () => {
@@ -16,6 +16,56 @@ export const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(formatCurrentTime())
+  const [dustMood, setDustMood] = useState<{ emoji: string; text: string; color: string; bgColor: string } | null>(null)
+
+  // 미세먼지 등급에 따른 표정과 색상 설정
+  const getDustMood = (grade: DustGrade) => {
+    const moodMap: Record<DustGrade, { emoji: string; text: string; color: string; bgColor: string }> = {
+      '매우 좋음': { 
+        emoji: '😊', 
+        text: '상쾌한 하루!', 
+        color: '#4285F4', 
+        bgColor: '#D0E8F2' 
+      },
+      '좋음': { 
+        emoji: '🙂', 
+        text: '좋은 공기!', 
+        color: '#1976D2', 
+        bgColor: '#E3F2FD' 
+      },
+      '양호': { 
+        emoji: '😐', 
+        text: '괜찮아요', 
+        color: '#22B14C', 
+        bgColor: '#F1F8E9' 
+      },
+      '보통': { 
+        emoji: '😕', 
+        text: '조금 주의', 
+        color: '#B5E61D', 
+        bgColor: '#FFF8E1' 
+      },
+      '주의': { 
+        emoji: '😟', 
+        text: '마스크 권장', 
+        color: '#FFD400', 
+        bgColor: '#FFF3E0' 
+      },
+      '나쁨': { 
+        emoji: '😰', 
+        text: '실외 활동 자제', 
+        color: '#FF7F27', 
+        bgColor: '#FFEBEE' 
+      },
+      '매우 나쁨': { 
+        emoji: '😱', 
+        text: '실외 금지!', 
+        color: '#F52020', 
+        bgColor: '#FCE4EC' 
+      }
+    };
+    return moodMap[grade] || { emoji: '😐', text: '정보 없음', color: '#6B7280', bgColor: '#F9FAFB' };
+  };
 
   // 위치 정보 및 미세먼지 데이터 로딩
   useEffect(() => {
@@ -36,6 +86,13 @@ export const Dashboard = () => {
         setDustData(currentDustData || null)
         setLocationInfo(location)
         setCurrentTime(formatCurrentTime())
+        
+        // 표정 상태 업데이트
+        if (currentDustData?.PM10 !== undefined) {
+          const pm10Grade = getPM10Grade(currentDustData.PM10);
+          const mood = getDustMood(pm10Grade);
+          setDustMood(mood);
+        }
         
       } catch (err) {
         console.error('데이터 로딩 실패:', err)
@@ -71,6 +128,13 @@ export const Dashboard = () => {
       setDustData(currentDustData || null)
       setLocationInfo(location)
       setCurrentTime(formatCurrentTime())
+      
+      // 표정 상태 업데이트
+      if (currentDustData?.PM10 !== undefined) {
+        const pm10Grade = getPM10Grade(currentDustData.PM10);
+        const mood = getDustMood(pm10Grade);
+        setDustMood(mood);
+      }
       
     } catch (err) {
       console.error('데이터 새로고침 실패:', err)
@@ -127,11 +191,26 @@ export const Dashboard = () => {
         </div>
       </header>
 
-      <div className="dashboard-content">
-        {/* 중앙 메인 콘텐츠 */}
-        <main className="main-content">
-          <House3D />
-        </main>
+              <div className="dashboard-content">
+                {/* 중앙 메인 콘텐츠 */}
+                <main className="main-content">
+                  <House3D />
+                  
+                  {/* 미세먼지 표정 오버레이 */}
+                  {dustMood && (
+                    <div 
+                      className="dust-mood-overlay"
+                      style={{
+                        backgroundColor: dustMood.bgColor,
+                        color: dustMood.color,
+                        borderColor: dustMood.color
+                      }}
+                    >
+                      <div className="mood-emoji">{dustMood.emoji}</div>
+                      <div className="mood-text">{dustMood.text}</div>
+                    </div>
+                  )}
+                </main>
 
         {/* 오른쪽 사이드바 - 데스크톱에서만 표시 */}
         {isLaptop && (
