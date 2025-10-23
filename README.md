@@ -79,6 +79,47 @@ src/
 npm run build
 ```
 
+## 🚀 배포 (Vercel)
+
+이 프로젝트는 Vercel을 통해 배포됩니다.
+
+### Vercel CLI를 사용한 배포
+
+1. **Vercel CLI 설치**
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Vercel 로그인**
+   ```bash
+   vercel login
+   ```
+
+3. **프로젝트 배포**
+   ```bash
+   # 개발 환경 배포
+   vercel
+   
+   # 프로덕션 배포
+   npm run deploy
+   ```
+
+### 자동 배포 설정
+
+GitHub 저장소와 Vercel을 연결하면 자동 배포가 설정됩니다:
+
+1. [Vercel 대시보드](https://vercel.com/dashboard)에 접속
+2. "New Project" 클릭
+3. GitHub 저장소 선택
+4. 빌드 설정 확인:
+   - **Framework Preset**: Vite
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+   - **Install Command**: `npm install`
+5. "Deploy" 클릭
+
+이제 `main` 브랜치에 푸시할 때마다 자동으로 배포됩니다.
+
 ## 🔧 개발 가이드
 
 ### 경로 별칭
