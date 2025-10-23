@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 12px 8px 0;
   color: #10b981;
   font-weight: 700;
   font-size: 16px;
@@ -53,40 +53,6 @@
   gap: 24px;
 }
 
-.refresh-btn {
-  background: #10b981;
-  border: none;
-  color: white;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.refresh-btn:hover:not(:disabled) {
-  background: #059669;
-  transform: translateY(-1px);
-}
-
-.refresh-btn:disabled {
-  background: #94a3b8;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.refresh-btn svg {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 
 .sidebar-toggle {
   background: none;
@@ -115,6 +81,10 @@
   color: #475569;
   font-weight: 500;
   font-size: 14px;
+}
+
+.user-profile span {
+  display: none;
 }
 
 .profile-avatar {
@@ -247,6 +217,23 @@
   padding: 0;
   border-left: none;
   overflow: hidden;
+}
+
+/* 모바일에서 사이드바 오버레이 */
+.right-sidebar.mobile-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 280px;
+  z-index: 1000;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  border-left: none;
+}
+
+.right-sidebar.mobile-overlay:not(.collapsed) {
+  transform: translateX(0);
 }
 
 .sidebar-header {
@@ -590,6 +577,23 @@
 .icon-background.green {
   background: linear-gradient(135deg, #10b981, #059669);
   color: white;
+}
+
+/* 모바일 사이드바 배경 오버레이 */
+.mobile-sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .icon-background.purple {

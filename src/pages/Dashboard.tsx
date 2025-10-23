@@ -112,37 +112,6 @@ export const Dashboard = () => {
     return () => clearInterval(interval)
   }, [])
 
-  // 새로고침 버튼 핸들러
-  const handleRefresh = async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      
-      const [dustApiData, location] = await Promise.all([
-        fetchDustData(),
-        getCurrentLocation()
-      ])
-      
-      const currentDustData = dustApiData[location.address]
-      
-      setDustData(currentDustData || null)
-      setLocationInfo(location)
-      setCurrentTime(formatCurrentTime())
-      
-      // 표정 상태 업데이트
-      if (currentDustData?.PM10 !== undefined) {
-        const pm10Grade = getPM10Grade(currentDustData.PM10);
-        const mood = getDustMood(pm10Grade);
-        setDustMood(mood);
-      }
-      
-    } catch (err) {
-      console.error('데이터 새로고침 실패:', err)
-      setError(err instanceof Error ? err.message : '데이터를 불러올 수 없습니다.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
     <div className={`smart-home-dashboard ${!isLaptop ? 'mobile-layout' : ''}`}>
@@ -165,15 +134,6 @@ export const Dashboard = () => {
         </div>
         
                 <div className="header-right">
-                  <button className="refresh-btn" onClick={handleRefresh} disabled={isLoading}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M21 3v5h-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M3 21v-5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    {isLoading ? '로딩...' : '새로고침'}
-                  </button>
                   <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                       <path d="M3 6H21M7 12H17M9 18H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -212,10 +172,16 @@ export const Dashboard = () => {
                   )}
                 </main>
 
-        {/* 오른쪽 사이드바 - 데스크톱에서만 표시 */}
-        {isLaptop && (
-          <>
-            <aside className={`right-sidebar ${!isSidebarOpen ? 'collapsed' : ''}`}>
+                {/* 모바일에서 사이드바 오버레이 배경 */}
+                {!isLaptop && isSidebarOpen && (
+                  <div 
+                    className="mobile-sidebar-backdrop" 
+                    onClick={() => setIsSidebarOpen(false)}
+                  />
+                )}
+
+                {/* 오른쪽 사이드바 - 데스크톱에서는 항상 표시, 모바일에서는 오버레이로 */}
+                <aside className={`right-sidebar ${!isSidebarOpen ? 'collapsed' : ''} ${!isLaptop ? 'mobile-overlay' : ''}`}>
                       <div className="sidebar-header">
                         <h2>상세 정보</h2>
                         <button className="sidebar-close" onClick={() => setIsSidebarOpen(false)}>
@@ -302,17 +268,15 @@ export const Dashboard = () => {
               </div>
             </aside>
             
-            {/* 사이드바가 접혔을 때 보여줄 토글 버튼 */}
-            {!isSidebarOpen && (
+            {/* 사이드바가 접혔을 때 보여줄 토글 버튼 - 데스크톱에서만 */}
+            {isLaptop && !isSidebarOpen && (
               <button className="sidebar-toggle-expanded" onClick={() => setIsSidebarOpen(true)}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path d="M3 6H21M7 12H17M9 18H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
             )}
-          </>
-        )}
-      </div>
-    </div>
+          </div>
+        </div>
   )
 }
