@@ -1,42 +1,51 @@
 import { House3D } from '@/widgets/House3D'
+import { DustInfo } from '@/widgets/DustInfo/DustInfo'
 import { useMediaQuery } from 'react-responsive'
 import { useState, useEffect } from 'react'
-import { getCurrentLocation, formatCurrentTime } from '@/shared/api/dustApi'
-import type { LocationInfo } from '@/shared/types/api'
+import { fetchDustData, getCurrentLocation, formatCurrentTime } from '@/shared/api/dustApi'
+import type { DustData, LocationInfo } from '@/shared/types/api'
 import './Dashboard.css'
 
 export const Dashboard = () => {
   const isLaptop = useMediaQuery({ minWidth: 1024 })
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   
-  // 위치 정보 상태
+  // 위치 정보 및 미세먼지 데이터 상태
+  const [dustData, setDustData] = useState<DustData | null>(null)
   const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(formatCurrentTime())
 
-  // 위치 정보 로딩
+  // 위치 정보 및 미세먼지 데이터 로딩
   useEffect(() => {
-    const loadLocationData = async () => {
+    const loadData = async () => {
       try {
         setIsLoading(true)
         setError(null)
         
-        // 위치 정보 가져오기
-        const location = await getCurrentLocation()
+        // 미세먼지 데이터와 위치 정보를 병렬로 가져오기
+        const [dustApiData, location] = await Promise.all([
+          fetchDustData(),
+          getCurrentLocation()
+        ])
         
+        // 현재 위치의 미세먼지 데이터 찾기
+        const currentDustData = dustApiData[location.address]
+        
+        setDustData(currentDustData || null)
         setLocationInfo(location)
         setCurrentTime(formatCurrentTime())
         
       } catch (err) {
-        console.error('위치 정보 로딩 실패:', err)
-        setError(err instanceof Error ? err.message : '위치 정보를 불러올 수 없습니다.')
+        console.error('데이터 로딩 실패:', err)
+        setError(err instanceof Error ? err.message : '데이터를 불러올 수 없습니다.')
       } finally {
         setIsLoading(false)
       }
     }
 
-    loadLocationData()
+    loadData()
     
     // 1분마다 시간 업데이트
     const interval = setInterval(() => {
@@ -52,14 +61,20 @@ export const Dashboard = () => {
       setIsLoading(true)
       setError(null)
       
-      const location = await getCurrentLocation()
+      const [dustApiData, location] = await Promise.all([
+        fetchDustData(),
+        getCurrentLocation()
+      ])
       
+      const currentDustData = dustApiData[location.address]
+      
+      setDustData(currentDustData || null)
       setLocationInfo(location)
       setCurrentTime(formatCurrentTime())
       
     } catch (err) {
-      console.error('위치 정보 새로고침 실패:', err)
-      setError(err instanceof Error ? err.message : '위치 정보를 불러올 수 없습니다.')
+      console.error('데이터 새로고침 실패:', err)
+      setError(err instanceof Error ? err.message : '데이터를 불러올 수 없습니다.')
     } finally {
       setIsLoading(false)
     }
@@ -122,35 +137,24 @@ export const Dashboard = () => {
         {isLaptop && (
           <>
             <aside className={`right-sidebar ${!isSidebarOpen ? 'collapsed' : ''}`}>
-              <div className="sidebar-header">
-                <h2>Smart Home Security Systems</h2>
-                <button className="sidebar-close" onClick={() => setIsSidebarOpen(false)}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
+                      <div className="sidebar-header">
+                        <h2>상세 정보</h2>
+                        <button className="sidebar-close" onClick={() => setIsSidebarOpen(false)}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
               
                       <div className="sidebar-content">
-                        {/* 위치 정보 섹션 */}
-                        <div className="location-info-section">
-                          <h3>현재 위치</h3>
-                          {isLoading ? (
-                            <div className="loading-state">
-                              <div className="loading-spinner"></div>
-                              <p>위치 정보 로딩 중...</p>
-                            </div>
-                          ) : error ? (
-                            <div className="error-state">
-                              <p>❌ {error}</p>
-                            </div>
-                          ) : (
-                            <div className="location-details">
-                              <p className="location-address">📍 {locationInfo?.address || '위치 정보 없음'}</p>
-                              <p className="location-time">{currentTime}</p>
-                            </div>
-                          )}
-                        </div>
+                        {/* 미세먼지 정보 섹션 */}
+                        <DustInfo 
+                          dustData={dustData || undefined}
+                          location={locationInfo?.address || undefined}
+                          time={currentTime}
+                          isLoading={isLoading}
+                          error={error || undefined}
+                        />
                         
                         {/* 멤버 섹션 */}
                         <div className="members-section">

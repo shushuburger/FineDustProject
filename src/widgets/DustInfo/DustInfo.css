@@ -1,0 +1,156 @@
+.dust-info-container {
+  margin-bottom: 0;
+}
+
+.dust-info-header {
+  margin-bottom: 16px;
+}
+
+.dust-info-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+}
+
+.location-text {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.time-text {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.dust-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dust-item {
+  text-align: center;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.dust-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dust-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1;
+  word-break: break-all;
+}
+
+.dust-grade {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dust-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dust-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+}
+
+.dust-error {
+  text-align: center;
+  padding: 20px;
+  color: #ef4444;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+.dust-no-data {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e2e8f0;
+  border-top: 2px solid #10b981;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .dust-data-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .dust-item {
+    padding: 12px;
+  }
+  
+  .dust-value {
+    font-size: 20px;
+  }
+  
+  .dust-legend {
+    gap: 8px;
+  }
+  
+  .legend-item {
+    font-size: 10px;
+  }
+  
+  .legend-color {
+    width: 10px;
+    height: 10px;
+  }
+}
