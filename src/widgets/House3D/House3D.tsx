@@ -6,30 +6,12 @@ import './House3D.css'
 export const House3D = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [zoomLevel, setZoomLevel] = useState(1.5)
   const isLaptop = useMediaQuery({ minWidth: 1024 })
 
 
   return (
-    <main className="house-3d-main">
-      <div className="content-header">
-        <h1>Home</h1>
-        <h2>Backyard</h2>
-      </div>
-      
-      <div className="tabs">
-        <button className="tab active">
-          <span className="tab-number">1</span>
-          <span className="tab-label">Flow</span>
-        </button>
-        <button className="tab">
-          <span className="tab-number">2</span>
-          <span className="tab-label">Flow</span>
-        </button>
-        <button className="tab">
-          <span className="tab-label">Garage</span>
-        </button>
-      </div>
-      
+    <main className={`house-3d-main ${!isLaptop ? 'mobile-layout' : ''}`}>
       <div className="house-3d-container">
         {isLoading && (
           <div className="loading-overlay">
@@ -47,7 +29,13 @@ export const House3D = () => {
         
         <Spline
           scene="https://prod.spline.design/yngEEta52QDzGews/scene.splinecode"
-          style={{ width: '100%', height: '100%' }}
+          style={{ 
+            width: `${zoomLevel * 100}%`, 
+            height: `${zoomLevel * 100}%`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
           onLoad={() => {
             console.log('Spline scene loaded successfully')
             setIsLoading(false)
@@ -61,6 +49,19 @@ export const House3D = () => {
         
         {isLaptop && (
           <div className="controls-info">
+            <div className="zoom-control">
+              <label htmlFor="zoom-slider">Zoom: {Math.round(zoomLevel * 100)}%</label>
+              <input
+                id="zoom-slider"
+                type="range"
+                min="0.5"
+                max="3.0"
+                step="0.1"
+                value={zoomLevel}
+                onChange={(e) => setZoomLevel(parseFloat(e.target.value))}
+                className="zoom-slider"
+              />
+            </div>
             <div className="control-item">
               <span className="control-key">WASD</span>
               <span className="control-desc">이동</span>
