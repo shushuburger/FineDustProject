@@ -1,0 +1,37 @@
+[
+  {
+    "category": "연령대",
+    "options": [
+      { "value": "child", "label": "어린이 (0~12세)", "recommendation": "실내 활동 위주 / 미세먼지 높은 날 외출 자제 / 마스크 착용 강조" },
+      { "value": "teen", "label": "청소년 (13~18세)", "recommendation": "학교 통학 시 대기질 확인 / 체육활동 조정 / 공기청정기 사용" },
+      { "value": "adult", "label": "성인 (19~64세)", "recommendation": "출퇴근 시 대기질 확인 / 대중교통 이용 시 마스크 착용" },
+      { "value": "senior", "label": "노년층 (65세 이상)", "recommendation": "호흡기 질환 주의 / 실내 환기 시점 안내 / 병원 방문 권고" }
+    ]
+  },
+  {
+    "category": "아이",
+    "options": [
+      { "value": "infant", "label": "영유아 (0~6세)", "recommendation": "유아용 마스크 착용법 / 유아용 공기청정기 권장 / 외출 시기 조정" },
+      { "value": "elementary", "label": "초등학생", "recommendation": "실내 놀이 대체 추천 / 등하교 시 공기질 주의 / 손씻기 캠페인" },
+      { "value": "none", "label": "없음", "recommendation": "자녀 관련 정보 숨김 / 일반 가이드 중심" }
+    ]
+  },
+  {
+    "category": "반려견",
+    "options": [
+      { "value": "dog", "label": "반려견 있음", "recommendation": "산책 시간 조정 (PM10 높을 시 단축) / 발 세척 및 그루밍 / 실내 배변 유도" },
+      { "value": "cat", "label": "반려묘 있음", "recommendation": "환기 시 주의 / 먼지 제거 청소 팁 / 공기정화식물 안내" },
+      { "value": "none", "label": "없음", "recommendation": "반려동물 관련 정보 숨김" }
+    ]
+  },
+  {
+    "category": "건강",
+    "options": [
+      { "value": "respiratory", "label": "호흡기 질환 있음", "recommendation": "마스크 착용 권장 / 외출 제한 알림 / 병원 방문 시기 안내" },
+      { "value": "cardio", "label": "심혈관 질환 있음", "recommendation": "공기오염 시 혈압·호흡 주의 / 저강도 실내운동 추천" },
+      { "value": "allergy", "label": "알레르기 있음", "recommendation": "창문 개폐 시간 안내 / 공기청정기 필터 교체 알림" },
+      { "value": "normal", "label": "일반", "recommendation": "일반적인 건강관리 가이드 제공" }
+    ]
+  }
+]
+

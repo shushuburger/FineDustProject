@@ -6,7 +6,11 @@ import { fetchDustData, getCurrentLocation, formatCurrentTime, getPM10Grade } fr
 import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import './Dashboard.css'
 
-export const Dashboard = () => {
+interface DashboardProps {
+  onNavigateToProfile?: () => void
+}
+
+export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   const isLaptop = useMediaQuery({ minWidth: 1024 })
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   
@@ -139,7 +143,7 @@ export const Dashboard = () => {
                       <path d="M3 6H21M7 12H17M9 18H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </button>
-          <div className="user-profile">
+          <div className="user-profile" onClick={onNavigateToProfile} style={{ cursor: 'pointer' }}>
             <span>Shopia W.</span>
             <div className="profile-avatar">
               <div className="avatar-circle"></div>
