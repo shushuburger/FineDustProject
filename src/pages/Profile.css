@@ -63,15 +63,6 @@
   background: white;
 }
 
-.profile-container-desktop {
-  width: 100%;
-  background: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  overflow: visible;
-  height: fit-content;
-}
-
 /* 커버 이미지 */
 .cover-image {
   width: 100%;
@@ -170,7 +161,7 @@
   padding: 4px 12px;
   font-family: inherit;
   outline: none;
-  background: white;
+  background: white !important;
   transition: all 0.2s;
 }
 
@@ -347,6 +338,7 @@
   font-family: inherit;
   outline: none;
   width: 85%;
+  background: white;
   transition: all 0.2s;
 }
 

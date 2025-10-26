@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import type { ProfileCategory, UserProfile } from '@/shared/types/profile'
 import profileCategories from '@/assets/data/profileCategories.json'
+import { Toast } from '@/shared/ui/Toast'
 import './Profile.css'
 
 interface ProfileProps {
@@ -10,12 +11,33 @@ interface ProfileProps {
 
 export const Profile = ({ onNavigateToDashboard }: ProfileProps) => {
   const isMobile = useMediaQuery({ maxWidth: 768 })
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
-  const [userName, setUserName] = useState('Shopia W.')
+  
+  // localStorage에서 저장된 데이터 불러오기
+  const loadSavedProfile = () => {
+    try {
+      const saved = localStorage.getItem('userProfile')
+      if (saved) {
+        const profile = JSON.parse(saved)
+        return {
+          userName: profile.userName || 'Shopia W.',
+          selectedOptions: profile.selectedOptions || {}
+        }
+      }
+    } catch (error) {
+      console.error('프로필 로드 실패:', error)
+    }
+    return { userName: 'Shopia W.', selectedOptions: {} }
+  }
+
+  const { userName: initialUserName, selectedOptions: initialOptions } = loadSavedProfile()
+  
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(initialOptions)
+  const [userName, setUserName] = useState(initialUserName)
   const [isEditingName, setIsEditingName] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [currentCategory, setCurrentCategory] = useState<ProfileCategory | null>(null)
   const [tempSelected, setTempSelected] = useState<string>('')
+  const [showToast, setShowToast] = useState(false)
 
   const handleOptionSelect = (category: string, value: string) => {
     setSelectedOptions((prev) => ({
@@ -25,20 +47,32 @@ export const Profile = ({ onNavigateToDashboard }: ProfileProps) => {
   }
 
   const handleSave = () => {
-    const newProfile: UserProfile = {
+    const profile: UserProfile = {
       ageGroup: selectedOptions['연령대'],
       child: selectedOptions['아이'],
       pet: selectedOptions['반려견'],
       health: selectedOptions['건강']
     }
-    localStorage.setItem('userProfile', JSON.stringify(newProfile))
-    alert('프로필이 저장되었습니다!')
-    onNavigateToDashboard?.()
+    
+    const profileData = {
+      userName: userName,
+      selectedOptions: selectedOptions,
+      profile
+    }
+    localStorage.setItem('userProfile', JSON.stringify(profileData))
+    setShowToast(true)
+    
+    // 토스트 표시 후 대시보드로 이동
+    setTimeout(() => {
+      onNavigateToDashboard?.()
+    }, 1500)
   }
 
   // 데스크톱 레이아웃
   if (!isMobile) {
     return (
+      <>
+        {showToast && <Toast message="프로필이 저장되었습니다!" type="success" onClose={() => setShowToast(false)} />}
       <div className="smart-home-profile">
         {/* 상단 헤더 */}
         <header className="profile-page-header">
@@ -134,11 +168,14 @@ export const Profile = ({ onNavigateToDashboard }: ProfileProps) => {
           </div>
         </div>
       </div>
+      </>
     )
   }
 
   // 모바일 레이아웃
   return (
+    <>
+      {showToast && <Toast message="프로필이 저장되었습니다!" type="success" onClose={() => setShowToast(false)} />}
     <div className="profile-page-mobile">
       <div className="profile-container-mobile">
         {/* 백 버튼 */}
@@ -260,6 +297,7 @@ export const Profile = ({ onNavigateToDashboard }: ProfileProps) => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

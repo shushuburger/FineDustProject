@@ -16,3 +16,9 @@ export interface UserProfile {
   health?: string
 }
 
+export interface SavedProfile {
+  userName: string
+  selectedOptions: Record<string, string>
+  profile: UserProfile
+}
+
