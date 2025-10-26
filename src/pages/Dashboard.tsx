@@ -20,6 +20,8 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(formatCurrentTime())
+  const [currentDate, setCurrentDate] = useState('')
+  const [calendarDates, setCalendarDates] = useState<number[]>([])
   const [dustMood, setDustMood] = useState<{ emoji: string; text: string; color: string; bgColor: string } | null>(null)
 
   // 미세먼지 등급에 따른 표정과 색상 설정
@@ -90,6 +92,32 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
         setDustData(currentDustData || null)
         setLocationInfo(location)
         setCurrentTime(formatCurrentTime())
+        
+        // 현재 날짜 설정
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = (now.getMonth() + 1).toString().padStart(2, '0')
+        const day = now.getDate().toString().padStart(2, '0')
+        const formattedDate = `${year}/${month}/${day}`
+        setCurrentDate(formattedDate)
+        
+        // 캘린더 날짜 생성
+        const lastDay = new Date(year, now.getMonth() + 1, 0)
+        const lastDate = lastDay.getDate()
+        
+        // 현재 주의 날짜들 생성 (오늘을 포함한 주의 7일)
+        const today = now.getDate()
+        const thisWeekStart = today - now.getDay() // 이번 주 일요일의 날짜
+        const dates: number[] = []
+        for (let i = 0; i < 7; i++) {
+          const date = thisWeekStart + i
+          if (date >= 1 && date <= lastDate) {
+            dates.push(date)
+          } else {
+            dates.push(0) // 빈 칸
+          }
+        }
+        setCalendarDates(dates)
         
         // 표정 상태 업데이트
         if (currentDustData?.PM10 !== undefined) {
@@ -204,23 +232,11 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                           isLoading={isLoading}
                           error={error || undefined}
                         />
-                        
-                        {/* 멤버 섹션 */}
-                        <div className="members-section">
-                  <h3>Members</h3>
-                  <div className="members-list">
-                    <div className="member-avatar blonde"></div>
-                    <div className="member-avatar initials">Gb</div>
-                    <div className="member-avatar brunette1"></div>
-                    <div className="member-avatar brunette2"></div>
-                    <div className="member-avatar more">+3</div>
-                  </div>
-                </div>
                 
                 {/* 활동 섹션 */}
                 <div className="activity-section">
-                  <h3>Activity</h3>
-                  <div className="activity-date">December 03, 2023</div>
+                  <h3>오늘의 미션</h3>
+                  <div className="activity-date">{currentDate}</div>
                   
                   {/* 캘린더 */}
                   <div className="calendar">
@@ -234,38 +250,49 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                       <div className="day">Sa</div>
                     </div>
                     <div className="calendar-dates">
-                      <div className="date">11</div>
-                      <div className="date">12</div>
-                      <div className="date">13</div>
-                      <div className="date active">14</div>
-                      <div className="date">15</div>
-                      <div className="date">16</div>
-                      <div className="date">17</div>
+                      {calendarDates.map((date, index) => (
+                        <div key={index} className={`date ${date === new Date().getDate() ? 'active' : ''}`}>
+                          {date > 0 ? date : ''}
+                        </div>
+                      ))}
                     </div>
                   </div>
                   
-                  {/* 활동 타임라인 */}
-                  <div className="activity-timeline">
-                    <div className="timeline-item">
-                      <div className="timeline-dot"></div>
-                      <div className="timeline-content">
-                        <div className="timeline-time">07:00 am</div>
-                        <div className="timeline-card purple">
-                          <div className="card-title">Home</div>
-                          <div className="card-text">Back Door was Closed</div>
-                        </div>
-                      </div>
+                  {/* 미션 체크리스트 */}
+                  <div className="mission-checklist">
+                    <div className="mission-item">
+                      <input type="checkbox" id="mission1" className="mission-checkbox" />
+                      <label htmlFor="mission1" className="mission-label">
+                        <span className="mission-text">마스크 착용하기</span>
+                      </label>
                     </div>
                     
-                    <div className="timeline-item">
-                      <div className="timeline-dot"></div>
-                      <div className="timeline-content">
-                        <div className="timeline-time">08:00 am</div>
-                        <div className="timeline-card white">
-                          <div className="card-title">Home</div>
-                          <div className="card-text">Back Door was Opened</div>
-                        </div>
-                      </div>
+                    <div className="mission-item">
+                      <input type="checkbox" id="mission2" className="mission-checkbox" />
+                      <label htmlFor="mission2" className="mission-label">
+                        <span className="mission-text">공기청정기 켜기</span>
+                      </label>
+                    </div>
+                    
+                    <div className="mission-item">
+                      <input type="checkbox" id="mission3" className="mission-checkbox" />
+                      <label htmlFor="mission3" className="mission-label">
+                        <span className="mission-text">물 충분히 마시기 (2L)</span>
+                      </label>
+                    </div>
+                    
+                    <div className="mission-item">
+                      <input type="checkbox" id="mission4" className="mission-checkbox" />
+                      <label htmlFor="mission4" className="mission-label">
+                        <span className="mission-text">창문 닫기</span>
+                      </label>
+                    </div>
+                    
+                    <div className="mission-item">
+                      <input type="checkbox" id="mission5" className="mission-checkbox" />
+                      <label htmlFor="mission5" className="mission-label">
+                        <span className="mission-text">실외 활동 자제하기</span>
+                      </label>
                     </div>
                   </div>
                 </div>

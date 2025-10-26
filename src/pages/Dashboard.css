@@ -357,58 +357,6 @@
   transform: translateY(-50%) scale(1.05);
 }
 
-/* 멤버 섹션 */
-.members-section {
-  margin-bottom: 0;
-}
-
-.members-section h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0 0 16px 0;
-}
-
-.members-list {
-  display: flex;
-  gap: 8px;
-}
-
-.member-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: white;
-  border: 2px solid #e2e8f0;
-}
-
-.member-avatar.blonde {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-}
-
-.member-avatar.initials {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
-.member-avatar.brunette1 {
-  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
-}
-
-.member-avatar.brunette2 {
-  background: linear-gradient(135deg, #c084fc, #a78bfa);
-}
-
-.member-avatar.more {
-  background: white;
-  color: #10b981;
-  border-color: #10b981;
-}
-
 /* 활동 섹션 */
 .activity-section {
   margin-bottom: 0;
@@ -474,72 +422,56 @@
   color: white;
 }
 
-/* 활동 타임라인 */
-.activity-timeline {
-  position: relative;
-}
-
-.timeline-item {
+/* 미션 체크리스트 */
+.mission-checklist {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  margin-bottom: 16px;
-  position: relative;
 }
 
-.timeline-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 6px;
-  top: 20px;
-  bottom: -16px;
-  width: 2px;
-  background: #e2e8f0;
+.mission-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.timeline-dot {
-  width: 12px;
-  height: 12px;
-  background: #10b981;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-
-.timeline-content {
-  flex: 1;
-}
-
-.timeline-time {
-  font-size: 10px;
-  color: #64748b;
-  margin-bottom: 4px;
-}
-
-.timeline-card {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #e2e8f0;
-}
-
-.timeline-card.purple {
-  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
-  border-color: #c084fc;
-}
-
-.timeline-card.white {
+.mission-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #10b981;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
-.card-title {
-  font-size: 12px;
-  font-weight: 600;
+.mission-checkbox:checked {
+  background: #10b981;
+  border-color: #10b981;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.mission-label {
+  flex: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.mission-text {
+  font-size: 14px;
   color: #1e293b;
-  margin-bottom: 2px;
+  transition: all 0.2s;
 }
 
-.card-text {
-  font-size: 11px;
+.mission-checkbox:checked + .mission-label .mission-text {
   color: #64748b;
+  text-decoration: line-through;
 }
 
 /* 인터랙티브 아이콘들 */
