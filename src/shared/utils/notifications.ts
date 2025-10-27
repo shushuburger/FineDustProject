@@ -56,46 +56,45 @@ export const updateNotificationMission = (missionTitle: string) => {
   console.log('📝 미션 알림 내용 업데이트:', missionTitle)
 }
 
+/**
+ * Service Worker로 알림 스케줄링 메시지 전송
+ */
+export const scheduleBackgroundNotification = async (delay: number = 10000, missionTitle?: string) => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.ready
+      
+      const message = {
+        type: 'SCHEDULE_NOTIFICATION',
+        delay: delay,
+        missionTitle: missionTitle || currentMissionTitle
+      }
+      
+      // Service Worker로 메시지 전송
+      registration.active?.postMessage(message)
+      console.log('📤 Service Worker로 알림 스케줄 요청 전송:', message)
+    } catch (error) {
+      console.error('❌ Service Worker 메시지 전송 실패:', error)
+    }
+  }
+}
+
 export const scheduleNotificationOnUnload = (delay: number = 10000, missionTitle?: string) => {
   // 미션 제목 설정
   if (missionTitle) {
     currentMissionTitle = missionTitle
   }
 
-  // 이미 이벤트 리스너가 등록되었으면 리턴
+  // 이미 설정되었으면 리턴
   if (hasListenerAdded) {
-    console.log('⚠️ 이벤트 리스너가 이미 등록되어 있습니다.')
+    console.log('⚠️ 이미 알림 스케줄링이 설정되어 있습니다.')
     return
   }
 
-  const beforeUnloadHandler = () => {
-    console.log('🚪 페이지 닫힘 감지 - 알림 스케줄링 시작')
-    console.log('현재 알림 상태:', Notification.permission)
-    
-    // Service Worker가 활성화되어 있으면 알림 스케줄링
-    if ('serviceWorker' in navigator) {
-      // Service Worker로 메시지 전송 (페이지 닫힌 후 실행됨)
-      if (navigator.serviceWorker.controller) {
-        const message = {
-          type: 'SCHEDULE_NOTIFICATION',
-          delay: delay,
-          missionTitle: currentMissionTitle
-        }
-        
-        navigator.serviceWorker.controller.postMessage(message)
-        console.log('📤 Service Worker로 알림 요청 전송:', message)
-      } else {
-        console.warn('⚠️ Service Worker controller가 없습니다')
-      }
-    } else {
-      console.warn('⚠️ Service Worker가 지원되지 않습니다')
-    }
-  }
-  
-  // beforeunload만 사용 (페이지를 완전히 닫을 때만)
-  window.addEventListener('beforeunload', beforeUnloadHandler)
+  // 페이지 로드 시 즉시 알림 스케줄링
+  scheduleBackgroundNotification(delay, currentMissionTitle)
   hasListenerAdded = true
   
-  console.log('✅ 페이지 언로드 감지 설정 완료 (브라우저를 닫을 때만 알림 표시)')
+  console.log('✅ 페이지 로드 시 알림 스케줄링 완료 (10초 후 알림 표시)')
 }
 
