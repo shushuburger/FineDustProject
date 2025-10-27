@@ -1,13 +1,40 @@
 import Spline from '@splinetool/react-spline'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMediaQuery } from 'react-responsive'
+import type { Application } from '@splinetool/runtime'
 import './House3D.css'
 
 export const House3D = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1.5)
+  const [currentObject, setCurrentObject] = useState<string>('none')
+  const [splineApp, setSplineApp] = useState<Application | null>(null)
   const isLaptop = useMediaQuery({ minWidth: 1024 })
+
+  // Spline 변수 변화 감지
+  useEffect(() => {
+    if (!splineApp) return
+
+    const interval = setInterval(() => {
+      try {
+        const value = splineApp.getVariable('nowObject')
+        if (value !== undefined && String(value) !== currentObject) {
+          console.log('nowObject:', value)
+          setCurrentObject(String(value))
+        }
+      } catch (error) {
+        // 변수 읽기 실패는 무시
+      }
+    }, 500)
+
+    return () => clearInterval(interval)
+  }, [splineApp, currentObject])
+
+  const handleSplineLoad = (app: Application) => {
+    setSplineApp(app)
+    setIsLoading(false)
+  }
 
 
   return (
@@ -36,12 +63,9 @@ export const House3D = () => {
             alignItems: 'center',
             justifyContent: 'center'
           }}
-          onLoad={() => {
-            console.log('Spline scene loaded successfully')
-            setIsLoading(false)
-          }}
+          onLoad={handleSplineLoad}
           onError={(error) => {
-            console.error('Spline loading error:', error)
+            console.error('❌ Spline loading error:', error)
             setHasError(true)
             setIsLoading(false)
           }}
