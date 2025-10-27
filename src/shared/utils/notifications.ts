@@ -91,10 +91,31 @@ export const scheduleNotificationOnUnload = (delay: number = 10000, missionTitle
     return
   }
 
-  // 페이지 로드 시 즉시 알림 스케줄링
-  scheduleBackgroundNotification(delay, currentMissionTitle)
+  // beforeunload 이벤트 등록 - 브라우저를 닫을 때만 알림 스케줄링
+  const beforeUnloadHandler = () => {
+    console.log('🚪 브라우저 닫힘 감지 - 알림 스케줄링 시작')
+    console.log('현재 알림 권한:', Notification.permission)
+    
+    // Service Worker로 메시지 전송
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      const message = {
+        type: 'SCHEDULE_NOTIFICATION',
+        delay: delay,
+        missionTitle: currentMissionTitle
+      }
+      
+      try {
+        navigator.serviceWorker.controller.postMessage(message)
+        console.log('📤 Service Worker로 알림 요청 전송:', message)
+      } catch (error) {
+        console.error('❌ 메시지 전송 실패:', error)
+      }
+    }
+  }
+  
+  window.addEventListener('beforeunload', beforeUnloadHandler)
   hasListenerAdded = true
   
-  console.log('✅ 페이지 로드 시 알림 스케줄링 완료 (10초 후 알림 표시)')
+  console.log('✅ 브라우저 닫힘 감지 설정 완료 (브라우저 닫은 후 10초 뒤 알림 표시)')
 }
 
