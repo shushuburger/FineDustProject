@@ -14,8 +14,11 @@ self.addEventListener('activate', (event) => {
 
 // 메시지 받기 (클라이언트에서 알림 스케줄)
 self.addEventListener('message', (event) => {
+  console.log('📨 Service Worker가 메시지 받음:', event.data)
+  
   if (event.data && event.data.type === 'SCHEDULE_NOTIFICATION') {
     const { delay, missionTitle } = event.data
+    console.log('⏰ 알림 스케줄링:', { delay, missionTitle })
     
     // 알림 스케줄링
     setTimeout(() => {
@@ -23,6 +26,8 @@ self.addEventListener('message', (event) => {
       const body = missionTitle 
         ? '지금 바로 시작해보세요 🎯' 
         : '매일 새로운 미세먼지 대응 미션을 확인해보세요 🌱'
+      
+      console.log('🔔 알림 표시 중...', title)
       
       self.registration.showNotification(title, {
         body: body,
@@ -32,6 +37,10 @@ self.addEventListener('message', (event) => {
         requireInteraction: true,
         silent: false,
         vibrate: [200, 100, 200]
+      }).then(() => {
+        console.log('✅ 알림 표시 완료')
+      }).catch((error) => {
+        console.error('❌ 알림 표시 실패:', error)
       })
     }, delay)
   }
