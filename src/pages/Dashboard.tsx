@@ -4,6 +4,8 @@ import { useMediaQuery } from 'react-responsive'
 import { useState, useEffect } from 'react'
 import { fetchDustData, getCurrentLocation, formatCurrentTime, getPM10Grade } from '@/shared/api/dustApi'
 import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
+import type { TodoRealLifeAction } from '@/shared/types/todo'
+import todoListData from '@/assets/data/todoList.json'
 import './Dashboard.css'
 
 interface DashboardProps {
@@ -23,6 +25,41 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   const [currentDate, setCurrentDate] = useState('')
   const [calendarDates, setCalendarDates] = useState<number[]>([])
   const [dustMood, setDustMood] = useState<{ emoji: string; text: string; color: string; bgColor: string } | null>(null)
+  const [randomMissions, setRandomMissions] = useState<TodoRealLifeAction[]>([])
+
+  // 날짜 기반 시드로 랜덤 미션 선택 (하루 단위로 고정)
+  const getRandomMissions = (count: number = 5, seed?: string): TodoRealLifeAction[] => {
+    const allActions = todoListData.realLifeActions
+    
+    // 시드가 있으면 결정적 난수 생성
+    if (seed) {
+      const seededRandom = (s: number) => {
+        const x = Math.sin(s++) * 10000
+        return x - Math.floor(x)
+      }
+      
+      const shuffled = [...allActions].sort((a, b) => {
+        const seed1 = seed.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+        const seed2 = seed1 + a.id
+        const seed3 = seed1 + b.id
+        return seededRandom(seed2) - seededRandom(seed3)
+      })
+      return shuffled.slice(0, count)
+    }
+    
+    // 시드가 없으면 일반 랜덤
+    const shuffled = [...allActions].sort(() => 0.5 - Math.random())
+    return shuffled.slice(0, count)
+  }
+
+  // 오늘 날짜 가져오기 (YYYY-MM-DD 형식)
+  const getTodayDateString = (): string => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = (now.getMonth() + 1).toString().padStart(2, '0')
+    const day = now.getDate().toString().padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
 
   // 미세먼지 등급에 따른 표정과 색상 설정
   const getDustMood = (grade: DustGrade) => {
@@ -118,6 +155,35 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
           }
         }
         setCalendarDates(dates)
+        
+        // 오늘 날짜 확인 및 미션 설정 (하루 단위로 고정)
+        const todayDate = getTodayDateString()
+        const stored = localStorage.getItem('dailyMissions')
+        
+        if (stored) {
+          try {
+            const { date, missions } = JSON.parse(stored)
+            if (date === todayDate) {
+              // 같은 날이면 저장된 미션 사용
+              setRandomMissions(missions)
+            } else {
+              // 다른 날이면 새로 선택
+              const newMissions = getRandomMissions(5, todayDate)
+              setRandomMissions(newMissions)
+              localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions: newMissions }))
+            }
+          } catch (error) {
+            // 파싱 에러 시 새로 선택
+            const missions = getRandomMissions(5, todayDate)
+            setRandomMissions(missions)
+            localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions }))
+          }
+        } else {
+          // 첫 방문 시
+          const missions = getRandomMissions(5, todayDate)
+          setRandomMissions(missions)
+          localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions }))
+        }
         
         // 표정 상태 업데이트
         if (currentDustData?.PM10 !== undefined) {
@@ -260,40 +326,14 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                   
                   {/* 미션 체크리스트 */}
                   <div className="mission-checklist">
-                    <div className="mission-item">
-                      <input type="checkbox" id="mission1" className="mission-checkbox" />
-                      <label htmlFor="mission1" className="mission-label">
-                        <span className="mission-text">마스크 착용하기</span>
-                      </label>
-                    </div>
-                    
-                    <div className="mission-item">
-                      <input type="checkbox" id="mission2" className="mission-checkbox" />
-                      <label htmlFor="mission2" className="mission-label">
-                        <span className="mission-text">공기청정기 켜기</span>
-                      </label>
-                    </div>
-                    
-                    <div className="mission-item">
-                      <input type="checkbox" id="mission3" className="mission-checkbox" />
-                      <label htmlFor="mission3" className="mission-label">
-                        <span className="mission-text">물 충분히 마시기 (2L)</span>
-                      </label>
-                    </div>
-                    
-                    <div className="mission-item">
-                      <input type="checkbox" id="mission4" className="mission-checkbox" />
-                      <label htmlFor="mission4" className="mission-label">
-                        <span className="mission-text">창문 닫기</span>
-                      </label>
-                    </div>
-                    
-                    <div className="mission-item">
-                      <input type="checkbox" id="mission5" className="mission-checkbox" />
-                      <label htmlFor="mission5" className="mission-label">
-                        <span className="mission-text">실외 활동 자제하기</span>
-                      </label>
-                    </div>
+                    {randomMissions.map((mission) => (
+                      <div key={mission.id} className="mission-item">
+                        <input type="checkbox" id={`mission${mission.id}`} className="mission-checkbox" />
+                        <label htmlFor={`mission${mission.id}`} className="mission-label">
+                          <span className="mission-text">{mission.title}</span>
+                        </label>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
