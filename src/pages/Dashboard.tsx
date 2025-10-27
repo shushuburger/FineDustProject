@@ -6,6 +6,7 @@ import { fetchDustData, getCurrentLocation, formatCurrentTime, getPM10Grade } fr
 import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import type { TodoRealLifeAction } from '@/shared/types/todo'
 import todoListData from '@/assets/data/todoList.json'
+import { registerServiceWorker, scheduleNotificationOnUnload, updateNotificationMission } from '@/shared/utils/notifications'
 import './Dashboard.css'
 
 interface DashboardProps {
@@ -202,13 +203,31 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
 
     loadData()
     
+    // Service Worker 등록
+    registerServiceWorker()
+    
+    // 페이지 언로드 감지 (브라우저 닫을 때만 실행)
+    scheduleNotificationOnUnload(10000)
+    
     // 1분마다 시간 업데이트
     const interval = setInterval(() => {
       setCurrentTime(formatCurrentTime())
     }, 60000)
 
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+    }
   }, [])
+
+  // randomMissions가 로드되면 알림 설정 업데이트
+  useEffect(() => {
+    if (randomMissions.length > 0) {
+      const randomMission = randomMissions[Math.floor(Math.random() * randomMissions.length)]
+      // 미션 제목만 업데이트 (이벤트 리스너는 이미 등록됨)
+      updateNotificationMission(randomMission.title)
+      console.log('미션 알림 업데이트:', randomMission.title)
+    }
+  }, [randomMissions])
 
 
   return (
