@@ -90,7 +90,7 @@ export const House3D = ({ pm10Value }: House3DProps) => {
                 sofa: '가구',
                 light: '조명',
                 stove: '가스레인지',
-                sink: '싱크대',
+                sink: '세면대',
                 fan: '공기청정기',
                 door: '출입문',
                 refrigeator: '냉장고',
