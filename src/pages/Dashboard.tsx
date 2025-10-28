@@ -36,6 +36,7 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
       pet?: string
     }
   } | null>(null)
+  const [showProfileModal, setShowProfileModal] = useState(false)
 
   // 날짜 기반 시드로 랜덤 미션 선택 (하루 단위로 고정)
   const getRandomMissions = (count: number = 5, seed?: string): TodoRealLifeAction[] => {
@@ -130,6 +131,39 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
       } catch (error) {
         console.error('프로필 정보 파싱 오류:', error)
       }
+    } else {
+      // 프로필이 없으면 모달 표시
+      setShowProfileModal(true)
+    }
+  }, [])
+
+  // 프로필 저장 감지 및 모달 닫기
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedProfile = localStorage.getItem('userProfile')
+      if (savedProfile) {
+        try {
+          const profile = JSON.parse(savedProfile)
+          setUserProfile(profile)
+          setShowProfileModal(false)
+        } catch (error) {
+          console.error('프로필 정보 파싱 오류:', error)
+        }
+      }
+    }
+
+    // 초기 로딩
+    handleStorageChange()
+
+    // storage 이벤트 리스너 추가 (다른 탭에서 변경 감지)
+    window.addEventListener('storage', handleStorageChange)
+
+    // 주기적으로 체크 (같은 탭에서 변경 감지)
+    const interval = setInterval(handleStorageChange, 500)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      clearInterval(interval)
     }
   }, [])
 
@@ -267,6 +301,35 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
 
 
   return (
+    <>
+      {/* 프로필 설정 모달 */}
+      {showProfileModal && (
+        <div className="profile-modal-overlay" onClick={() => setShowProfileModal(false)}>
+          <div className="profile-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <h2>환영합니다</h2>
+              <button className="profile-modal-close" onClick={() => setShowProfileModal(false)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div className="profile-modal-body">
+              <p>맞춤형 미세먼지 정보를 제공받기 위해 프로필을 설정해주세요.</p>
+              <button 
+                className="profile-modal-button"
+                onClick={() => {
+                  setShowProfileModal(false)
+                  onNavigateToProfile?.()
+                }}
+              >
+                프로필 설정하러 가기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     <div className={`smart-home-dashboard ${!isLaptop ? 'mobile-layout' : ''}`}>
       {/* 상단 헤더 */}
       <header className="dashboard-header">
@@ -452,5 +515,6 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
             )}
           </div>
         </div>
+    </>
   )
 }

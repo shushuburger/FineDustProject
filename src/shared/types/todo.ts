@@ -1,20 +1,13 @@
-export interface TodoAppAction {
-  id: number
-  title: string
-  description: string
-  category: string
-}
-
 export interface TodoRealLifeAction {
   id: number
   title: string
   description: string
   category: string
+  guidelineKey?: string
   dustConditions: string[]
 }
 
 export interface TodoListData {
-  appActions: TodoAppAction[]
   realLifeActions: TodoRealLifeAction[]
 }
 

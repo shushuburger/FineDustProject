@@ -239,9 +239,50 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
               </button>
             </div>
             <div className="behavioral-modal-body">
-              {modalContent.map((item, index) => (
-                <p key={index} className="behavioral-modal-text">{item}</p>
-              ))}
+              {modalContent.map((item, index) => {
+                // 링크가 있는지 확인하고 파싱
+                if (item.includes('구매 링크:')) {
+                  const parts = item.split('구매 링크:')
+                  const text = parts[0].trim()
+                  const url = parts[1]?.trim()
+                  const displayText = text.includes('마스크') ? '마스크 사러 가기' : 
+                                     text.includes('필터') ? '공기청정기 필터 사러 가기' :
+                                     text.includes('코 세척') ? '코 세척 식염수 사러 가기' :
+                                     text.includes('진공') ? 'HEPA 진공청소기 사러 가기' :
+                                     text.includes('식물') ? '반려식물 사러 가기' : '구매 링크'
+                  
+                  return (
+                    <p key={index} className="behavioral-modal-text">
+                      {text && <span>{text}</span>}
+                      {url && (
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                          {displayText}
+                        </a>
+                      )}
+                    </p>
+                  )
+                }
+                
+                // 정보 링크 처리 (질병관리청, 대한천식알레르기학회 등)
+                if (item.includes(' 정보:') || item.startsWith('질병관리청') || item.startsWith('대한천식')) {
+                  const parts = item.split(' 정보:')
+                  const url = parts[1]?.trim()
+                  const displayText = item.includes('질병관리청') ? '질병관리청 바로가기' :
+                                     item.includes('대한천식') ? '대한천식알레르기학회 바로가기' : '바로가기'
+                  
+                  return (
+                    <p key={index} className="behavioral-modal-text">
+                      {url && (
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                          {displayText}
+                        </a>
+                      )}
+                    </p>
+                  )
+                }
+                
+                return <p key={index} className="behavioral-modal-text">{item}</p>
+              })}
             </div>
           </div>
         </div>

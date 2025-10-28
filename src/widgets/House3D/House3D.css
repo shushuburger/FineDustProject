@@ -273,6 +273,19 @@
   border-left: 3px solid #10b981;
 }
 
+.behavioral-modal-link {
+  color: #10b981;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 8px;
+  transition: color 0.2s;
+}
+
+.behavioral-modal-link:hover {
+  color: #059669;
+  text-decoration: underline;
+}
+
 /* 모바일 대응 */
 @media (max-width: 768px) {
   .behavioral-modal-content {

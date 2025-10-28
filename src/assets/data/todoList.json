@@ -1,136 +1,92 @@
 {
-  "appActions": [
-    {
-      "id": 1,
-      "title": "미세먼지 수치 확인하기",
-      "description": "오늘의 PM10, PM2.5, O₃ 수치를 지도와 그래프로 확인",
-      "category": "대기질"
-    },
-    {
-      "id": 2,
-      "title": "내 위치로 이동하기",
-      "description": "지도에서 내 위치로 자동 이동하여 현 위치 대기질 보기",
-      "category": "지도"
-    },
-    {
-      "id": 3,
-      "title": "지역 선택해보기",
-      "description": "특정 구/동을 클릭하여 해당 지역의 공기질과 행동 가이드 보기",
-      "category": "탐색"
-    },
-    {
-      "id": 4,
-      "title": "냉장고 클릭해보기",
-      "description": "집 내부 3D 씬에서 냉장고 클릭 → 공기 순환 가이드 표시",
-      "category": "3D 인터랙션"
-    },
-    {
-      "id": 5,
-      "title": "창문 클릭해보기",
-      "description": "창문 클릭 시 \"환기 적정 시간\" 팝업 띄우기",
-      "category": "3D 인터랙션"
-    },
-    {
-      "id": 6,
-      "title": "그래프 탭 전환하기",
-      "description": "PM10 ↔ PM2.5 그래프 전환 버튼 클릭",
-      "category": "그래프"
-    },
-    {
-      "id": 7,
-      "title": "행동 가이드 카드 확인하기",
-      "description": "연령대별 행동 가이드 카드 열람",
-      "category": "가이드"
-    },
-    {
-      "id": 8,
-      "title": "알림 설정하기",
-      "description": "미세먼지 수치 임계값 알림 설정 (예: 나쁨 이상)",
-      "category": "설정"
-    },
-    {
-      "id": 9,
-      "title": "마스크 정보 확인하기",
-      "description": "KF94 등급별 마스크 착용 권장도 확인",
-      "category": "정보"
-    },
-    {
-      "id": 10,
-      "title": "날씨/대기 비교보기",
-      "description": "미세먼지 + 온도/습도 정보를 함께 시각화",
-      "category": "비교"
-    }
-  ],
   "realLifeActions": [
     {
       "id": 1,
-      "title": "공기청정기 돌리기",
-      "description": "실내 PM2.5 수치가 높을 때 자동 실행 알림",
-      "category": "실내 관리",
-      "dustConditions": ["나쁨", "매우 나쁨"]
+      "title": "창문 클릭해서 환기 관련 행동 방안 알아보기",
+      "description": "현재 대기질에 맞는 환기 방법과 적정 시간 확인하기",
+      "category": "환기 관리",
+      "guidelineKey": "window",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 2,
-      "title": "외출 자제하기",
-      "description": "PM10 수치 '매우 나쁨'일 때 외출 제한 권고",
-      "category": "외출 관리",
-      "dustConditions": ["매우 나쁨"]
+      "title": "청소기 클릭해서 청소에 관한 행동 방안 찾아보기",
+      "description": "미세먼지 수치에 맞는 청소 방법과 주의사항 확인하기",
+      "category": "청소 관리",
+      "guidelineKey": "clean",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 3,
-      "title": "환기 타이머 켜기",
-      "description": "오전 10시~12시 환기 권장 시 알림",
-      "category": "환기 관리",
-      "dustConditions": ["보통"]
+      "title": "냉장고 클릭해서 건강한 식습관 알아보기",
+      "description": "미세먼지 대비 수분 섭취와 식단 관리 방법 확인하기",
+      "category": "건강 관리",
+      "guidelineKey": "refrigeator",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 4,
-      "title": "실내 식물 관리",
-      "description": "공기 정화 식물 물 주기/광량 안내",
-      "category": "식물 관리",
-      "dustConditions": ["전체"]
+      "title": "공기청정기 클릭해서 실내 공기 관리 방법 보기",
+      "description": "공기청정기 사용법과 필터 관리 가이드 확인하기",
+      "category": "실내 관리",
+      "guidelineKey": "fan",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 5,
-      "title": "마스크 착용하기",
-      "description": "외출 전 실시간 대기질 기준 KF94 이상 착용 권장",
-      "category": "안전",
-      "dustConditions": ["나쁨", "매우 나쁨"]
+      "title": "문 클릭해서 외출 시 주의사항 확인하기",
+      "description": "외출 전 준비 사항과 귀가 후 행동 가이드 보기",
+      "category": "외출 관리",
+      "guidelineKey": "door",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 6,
-      "title": "세탁기 돌리기",
-      "description": "대기질 좋은 날에 세탁 권장",
-      "category": "청소",
-      "dustConditions": ["좋음"]
+      "title": "싱크대 클릭해서 세정 방법 알아보기",
+      "description": "외출 후 손·얼굴 세안 및 코 세척 방법 확인하기",
+      "category": "건강 관리",
+      "guidelineKey": "sink",
+      "dustConditions": ["보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 7,
-      "title": "공원 산책하기",
-      "description": "대기질 좋음 시 알림 \"지금 산책 어때요?\"",
-      "category": "운동",
-      "dustConditions": ["좋음"]
+      "title": "가스레인지 클릭해서 조리 시 주의사항 보기",
+      "description": "조리 중 환기 방법과 조리 유형별 가이드 확인하기",
+      "category": "조리 관리",
+      "guidelineKey": "stove",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 8,
-      "title": "차량 공기필터 교체하기",
-      "description": "PM2.5 수치 급등 시 필터 교체 알림",
-      "category": "차량 관리",
-      "dustConditions": ["나쁨", "매우 나쁨"]
+      "title": "소파 클릭해서 가구 청소 방법 확인하기",
+      "description": "가구 틈새 청소와 진공·물걸레질 활용법 알아보기",
+      "category": "청소 관리",
+      "guidelineKey": "sofa",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 9,
-      "title": "실내 환기 자제하기",
-      "description": "외부 미세먼지 농도 높을 때 환기 중단 권고",
-      "category": "환기 관리",
-      "dustConditions": ["나쁨", "매우 나쁨"]
+      "title": "조명 클릭해서 실내 조도 관리 알아보기",
+      "description": "미세먼지 시기 체류 시간에 맞는 적정 밝기 설정하기",
+      "category": "실내 관리",
+      "guidelineKey": "light",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     },
     {
       "id": 10,
-      "title": "아이 외출 시간 조정",
-      "description": "청소년/어린이 연령대일 때 실외활동 제한",
-      "category": "건강 관리",
-      "dustConditions": ["나쁨", "매우 나쁨"]
+      "title": "반려식물 관련 케어 가이드 보기",
+      "description": "공기 정화 식물 관리와 잎 청소 방법 확인하기",
+      "category": "식물 관리",
+      "guidelineKey": "plants",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
+    },
+    {
+      "id": 11,
+      "title": "반려견 산책 가이드 확인하기",
+      "description": "대기질에 따른 산책 시간 조절과 귀가 후 관리 방법 보기",
+      "category": "반려동물 관리",
+      "guidelineKey": "dog",
+      "dustConditions": ["좋음", "보통", "나쁨", "매우 나쁨"]
     }
   ]
 }
