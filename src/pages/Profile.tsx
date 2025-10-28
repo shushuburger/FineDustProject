@@ -149,8 +149,10 @@ export const Profile = ({ onNavigateToDashboard }: ProfileProps) => {
                           key={option.value}
                           className={`option-chip ${isSelected ? 'selected' : ''}`}
                           onClick={() => handleOptionSelect(category.category, option.value)}
+                          title={option.recommendation}
                         >
                           {option.label}
+                          {option.recommendation && <span className="recommendation-text">{option.recommendation}</span>}
                         </button>
                       )
                     })}
