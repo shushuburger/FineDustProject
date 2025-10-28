@@ -94,9 +94,7 @@ export const House3D = ({ pm10Value }: House3DProps) => {
                 fan: '공기청정기',
                 door: '출입문',
                 refrigeator: '냉장고',
-                floor: '바닥',
-                smoking_area: '흡연 부스',
-                entrance: '현관'
+                clean: '청소'
               }
               
               setModalTitle(objectNames[objectName] || objectName)
