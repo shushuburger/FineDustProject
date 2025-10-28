@@ -140,7 +140,7 @@ export const House3D = ({ pm10Value }: House3DProps) => {
         )}
         
         <Spline
-          scene="https://prod.spline.design/yngEEta52QDzGews/scene.splinecode"
+          scene="https://prod.spline.design/LZVviCy6ekslUYeT/scene.splinecode"
           style={{ 
             width: `${zoomLevel * 100}%`, 
             height: `${zoomLevel * 100}%`,
