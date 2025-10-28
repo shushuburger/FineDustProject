@@ -271,7 +271,7 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
               <div className="dashboard-content">
                 {/* 중앙 메인 콘텐츠 */}
                 <main className="main-content">
-                  <House3D />
+                  <House3D pm10Value={dustData?.PM10} />
                   
                   {/* 미세먼지 표정 오버레이 */}
                   {dustMood && (
