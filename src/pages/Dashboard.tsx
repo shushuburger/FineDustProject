@@ -28,6 +28,14 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   const [dustMood, setDustMood] = useState<{ emoji: string; text: string; color: string; bgColor: string } | null>(null)
   const [randomMissions, setRandomMissions] = useState<TodoRealLifeAction[]>([])
   const [testPm10, setTestPm10] = useState<number | null>(null)
+  const [userProfile, setUserProfile] = useState<{
+    profile?: {
+      health?: string
+      ageGroup?: string
+      child?: string
+      pet?: string
+    }
+  } | null>(null)
 
   // 날짜 기반 시드로 랜덤 미션 선택 (하루 단위로 고정)
   const getRandomMissions = (count: number = 5, seed?: string): TodoRealLifeAction[] => {
@@ -111,6 +119,19 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
     };
     return moodMap[grade] || { emoji: '😐', text: '정보 없음', color: '#6B7280', bgColor: '#F9FAFB' };
   };
+
+  // 사용자 프로필 정보 로딩
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile')
+    if (savedProfile) {
+      try {
+        const profile = JSON.parse(savedProfile)
+        setUserProfile(profile)
+      } catch (error) {
+        console.error('프로필 정보 파싱 오류:', error)
+      }
+    }
+  }, [])
 
   // 위치 정보 및 미세먼지 데이터 로딩
   useEffect(() => {
@@ -328,7 +349,13 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
               <div className="dashboard-content">
                 {/* 중앙 메인 콘텐츠 */}
                 <main className="main-content">
-                  <House3D pm10Value={testPm10 ?? dustData?.PM10} />
+                  <House3D 
+                    pm10Value={testPm10 ?? dustData?.PM10}
+                    userHealth={userProfile?.profile?.health}
+                    userAge={userProfile?.profile?.ageGroup}
+                    userChild={userProfile?.profile?.child}
+                    userPet={userProfile?.profile?.pet}
+                  />
                   
                   {/* 미세먼지 표정 오버레이 */}
                   {dustMood && (

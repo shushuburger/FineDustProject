@@ -7,9 +7,13 @@ import './House3D.css'
 
 interface House3DProps {
   pm10Value?: number
+  userHealth?: string
+  userAge?: string
+  userChild?: string
+  userPet?: string
 }
 
-export const House3D = ({ pm10Value }: House3DProps) => {
+export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: House3DProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1.5)
@@ -80,7 +84,48 @@ export const House3D = ({ pm10Value }: House3DProps) => {
             if (objectName !== 'none' && behavioralGuidelines.guides[objectName as keyof typeof behavioralGuidelines.guides]) {
               const dustLevel = getDustLevel(pm10Value)
               const guide = behavioralGuidelines.guides[objectName as keyof typeof behavioralGuidelines.guides]
-              const content = guide[dustLevel]
+              let content = [...guide.baseMessages[dustLevel]]
+              
+              // 조건부 메시지 추가
+              if ('conditionalMessages' in guide && guide.conditionalMessages) {
+                const conditionalMsgs = guide.conditionalMessages as any
+                
+                // 건강 상태 확인
+                if (userHealth && conditionalMsgs[`health_${userHealth}`]) {
+                  const healthMsg = conditionalMsgs[`health_${userHealth}`]
+                  if (healthMsg[dustLevel]) {
+                    content = [...content, ...healthMsg[dustLevel]]
+                  }
+                }
+                
+                // 반려견 확인
+                if (userPet === 'dog' && conditionalMsgs.pet_dog) {
+                  const petMsg = conditionalMsgs.pet_dog
+                  if (petMsg[dustLevel]) {
+                    content = [...content, ...petMsg[dustLevel]]
+                  }
+                }
+                
+                // 연령대 확인
+                if (userAge) {
+                  // senior를 elderly로 매핑
+                  const ageKey = userAge === 'senior' ? 'age_elderly' : `age_${userAge}`
+                  if (conditionalMsgs[ageKey]) {
+                    const ageMsg = conditionalMsgs[ageKey]
+                    if (ageMsg[dustLevel]) {
+                      content = [...content, ...ageMsg[dustLevel]]
+                    }
+                  }
+                }
+                
+                // 아이 확인
+                if (userChild && userChild !== 'none' && conditionalMsgs.child) {
+                  const childMsg = conditionalMsgs.child
+                  if (childMsg[dustLevel]) {
+                    content = [...content, ...childMsg[dustLevel]]
+                  }
+                }
+              }
               
               // 객체 이름을 한글로 변환
               const objectNames: Record<string, string> = {
@@ -112,7 +157,7 @@ export const House3D = ({ pm10Value }: House3DProps) => {
     }, 500)
 
     return () => clearInterval(interval)
-  }, [splineApp, pm10Value, isReadyForModal])
+  }, [splineApp, pm10Value, isReadyForModal, userHealth, userAge, userChild, userPet])
 
   const handleSplineLoad = (app: Application) => {
     setSplineApp(app)
