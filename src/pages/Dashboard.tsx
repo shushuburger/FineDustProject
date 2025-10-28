@@ -27,6 +27,7 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   const [calendarDates, setCalendarDates] = useState<number[]>([])
   const [dustMood, setDustMood] = useState<{ emoji: string; text: string; color: string; bgColor: string } | null>(null)
   const [randomMissions, setRandomMissions] = useState<TodoRealLifeAction[]>([])
+  const [testPm10, setTestPm10] = useState<number | null>(null)
 
   // 날짜 기반 시드로 랜덤 미션 선택 (하루 단위로 고정)
   const getRandomMissions = (count: number = 5, seed?: string): TodoRealLifeAction[] => {
@@ -186,8 +187,8 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
           localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions }))
         }
         
-        // 표정 상태 업데이트
-        if (currentDustData?.PM10 !== undefined) {
+        // 표정 상태 업데이트 (testPm10이 없을 때만)
+        if (!testPm10 && currentDustData?.PM10 !== undefined) {
           const pm10Grade = getPM10Grade(currentDustData.PM10);
           const mood = getDustMood(pm10Grade);
           setDustMood(mood);
@@ -229,6 +230,20 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
     }
   }, [randomMissions])
 
+  // 테스트용 PM10 값이 변경될 때 dustMood 업데이트
+  useEffect(() => {
+    if (testPm10 !== null) {
+      const pm10Grade = getPM10Grade(testPm10);
+      const mood = getDustMood(pm10Grade);
+      setDustMood(mood);
+    } else if (dustData?.PM10 !== undefined) {
+      // 실제값 복원 시 실제 데이터로 표정 재계산
+      const pm10Grade = getPM10Grade(dustData.PM10);
+      const mood = getDustMood(pm10Grade);
+      setDustMood(mood);
+    }
+  }, [testPm10, dustData])
+
 
   return (
     <div className={`smart-home-dashboard ${!isLaptop ? 'mobile-layout' : ''}`}>
@@ -256,6 +271,48 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                       <path d="M3 6H21M7 12H17M9 18H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </button>
+
+          {/* 테스트용 미세먼지 등급 버튼 - 데스크톱에서만 표시 */}
+          {isLaptop && (
+            <div style={{ display: 'flex', gap: '8px', marginRight: '16px' }}>
+              <button 
+                onClick={() => setTestPm10(20)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="좋음 (0-30)"
+              >
+                좋음
+              </button>
+              <button 
+                onClick={() => setTestPm10(60)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#22b14c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="보통 (31-80)"
+              >
+                보통
+              </button>
+              <button 
+                onClick={() => setTestPm10(110)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#ffd400', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="나쁨 (81-150)"
+              >
+                나쁨
+              </button>
+              <button 
+                onClick={() => setTestPm10(200)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#f52020', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="매우 나쁨 (151+)"
+              >
+                매우 나쁨
+              </button>
+              <button 
+                onClick={() => setTestPm10(null)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#64748b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="실제 데이터 사용"
+              >
+                실제값
+              </button>
+            </div>
+          )}
+
           <div className="user-profile" onClick={onNavigateToProfile} style={{ cursor: 'pointer' }}>
             <span>Shopia W.</span>
             <div className="profile-avatar">
@@ -271,7 +328,7 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
               <div className="dashboard-content">
                 {/* 중앙 메인 콘텐츠 */}
                 <main className="main-content">
-                  <House3D pm10Value={dustData?.PM10} />
+                  <House3D pm10Value={testPm10 ?? dustData?.PM10} />
                   
                   {/* 미세먼지 표정 오버레이 */}
                   {dustMood && (
