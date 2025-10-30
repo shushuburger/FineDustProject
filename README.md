@@ -5,6 +5,7 @@
 ## 방문하기: https://fine-dust-project.vercel.app
 
 ### develop 추가
+- devleop으로 pr 날리기
 
 ## 📋 서비스 소개
 
