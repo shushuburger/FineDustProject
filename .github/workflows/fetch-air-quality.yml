@@ -2,10 +2,9 @@ name: Fetch Air Quality Hourly
 
 on:
   schedule:
-    # GitHub Actions는 UTC 기준. KST 07~22시는 UTC 22~23, 00~13시.
-    - cron: '0 0-11 * * *'   # UTC 00~11시 = KST 09~20시
-    - cron: '0 22-23 * * *'  # UTC 22~23시 = KST 07~08시
-    - cron: '0 17-19 * * *'  # 추가: UTC 17~19시 = KST 02~04시
+    # GitHub Actions는 UTC 기준. KST 05~20시는 UTC 20~23, 00~11시.
+    - cron: '0 0-11 * * *'   # UTC 00~11 = KST 09~20
+    - cron: '0 20-23 * * *'  # UTC 20~23 = KST 05~08 (이전날 UTC)
   workflow_dispatch: {}
 
 jobs:
@@ -29,7 +28,6 @@ jobs:
       - name: Run fetch script
         env:
           SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
-          CITY_FILTER: 대전
         run: |
           npm run fetch:air
 

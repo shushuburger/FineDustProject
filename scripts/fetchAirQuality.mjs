@@ -9,7 +9,8 @@ if (!SERVICE_KEY) {
 
 // 입력/출력 경로
 const projectRoot = process.cwd()
-const stationListPath = path.join(projectRoot, 'public', 'data', 'station_names.json')
+// 대전 측정소 좌표 파일의 키들을 요청 대상으로 사용
+const stationListPath = path.join(projectRoot, 'public', 'data', 'stations_with_coords.json')
 const outputPath = path.join(projectRoot, 'public', 'data', 'air-quality.json')
 
 // OpenAPI 엔드포인트 (측정소별 실시간 측정정보 조회)
@@ -88,8 +89,14 @@ async function main() {
   }
 
   const raw = await fs.readFile(stationListPath, 'utf8')
+  const coords = JSON.parse(raw)
   /** @type {string[]} */
-  const stations = JSON.parse(raw)
+  const stations = Object.keys(coords?.data || {})
+  if (stations.length === 0) {
+    console.error('stations_with_coords.json에서 측정소명을 찾지 못했습니다. data 키를 확인하세요.')
+    process.exit(1)
+  }
+  console.log(`Using ${stations.length} Daejeon stations from stations_with_coords.json`)
 
   const concurrency = 8
   const queue = [...stations]
