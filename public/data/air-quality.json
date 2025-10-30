@@ -1,72 +1,69 @@
 {
-  "updatedAt": "2025-10-30T20:51:29.844Z",
+  "updatedAt": "2025-10-30T21:21:08.949Z",
   "count": 11,
   "data": {
     "관평동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 46,
+      "pm25": 5,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     },
     "구성동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 57,
+      "pm25": 29,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     },
     "대성동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 40,
+      "pm25": 3,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     },
     "노은동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "둔산동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "문평동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 28,
+      "pm25": 15,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     },
     "문창동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 9,
+      "pm25": 11,
+      "dataTime": "2025-10-31 06:00"
     },
     "상대동(대전)": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 22,
+      "pm25": 16,
+      "dataTime": "2025-10-31 06:00"
+    },
+    "문평동": {
+      "pm10": 34,
+      "pm25": 31,
+      "dataTime": "2025-10-31 06:00"
+    },
+    "둔산동": {
+      "pm10": 54,
+      "pm25": 28,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     },
     "성남동1": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 27,
+      "pm25": 13,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     },
     "읍내동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 69,
+      "pm25": 7,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     },
     "정림동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 39,
+      "pm25": 14,
+      "dataTime": "2025-10-31 06:00",
+      "error": "fallback: aborted"
     }
   }
 }
