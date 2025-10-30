@@ -2,7 +2,7 @@ import { House3D } from '@/widgets/House3D'
 import { DustInfo } from '@/widgets/DustInfo/DustInfo'
 import { useMediaQuery } from 'react-responsive'
 import { useState, useEffect } from 'react'
-import { fetchDustData, getCurrentLocation, formatCurrentTime, getPM10Grade } from '@/shared/api/dustApi'
+import { formatCurrentTime, getPM10Grade, getNearestStationAir } from '@/shared/api/dustApi'
 import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import type { TodoRealLifeAction } from '@/shared/types/todo'
 import todoListData from '@/assets/data/todoList.json'
@@ -174,14 +174,17 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
         setIsLoading(true)
         setError(null)
         
-        // 미세먼지 데이터와 위치 정보를 병렬로 가져오기
-        const [dustApiData, location] = await Promise.all([
-          fetchDustData(),
-          getCurrentLocation()
-        ])
-        
-        // 현재 위치의 미세먼지 데이터 찾기
-        const currentDustData = dustApiData[location.address]
+        // 최근접 측정소 기반 미세먼지 정보 가져오기
+        const result = await getNearestStationAir()
+        console.log('[Dust] Nearest station:', result.nearestStation)
+        console.log('[Dust] Air snapshot for station:', result.air)
+        console.log('[Dust] Current location:', result.location)
+        const location = result.location
+        const air = result.air
+        // 스냅샷 포맷을 기존 DustData로 매핑
+        const currentDustData = air
+          ? { PM10: air.pm10 ?? undefined, 'PM2.5': air.pm25 ?? undefined }
+          : null
         
         setDustData(currentDustData || null)
         setLocationInfo(location)
