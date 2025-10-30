@@ -202,6 +202,23 @@ export const findNearestStation = async (
 };
 
 /**
+ * 주어진 좌표에서 가까운 순서대로 모든 측정소를 정렬하여 반환합니다.
+ */
+export const findNearestStations = async (
+  latitude: number,
+  longitude: number
+): Promise<Array<{ name: string; distanceKm: number; coords: StationCoords }>> => {
+  const { data } = await fetchStationsWithCoords();
+  const stations = [];
+  for (const [name, coords] of Object.entries(data)) {
+    const d = haversineKm(latitude, longitude, coords.latitude, coords.longitude);
+    stations.push({ name, distanceKm: d, coords });
+  }
+  stations.sort((a, b) => a.distanceKm - b.distanceKm);
+  return stations;
+};
+
+/**
  * 정적 리소스에서 최근 수집된 대기질 스냅샷을 가져옵니다.
  * 파일: public/data/air-quality.json
  */
@@ -230,15 +247,33 @@ export const getAirForStation = async (
 
 /**
  * 현재 위치 기반으로 최근접 측정소와 해당 대기정보를 함께 반환합니다.
+ * 가장 가까운 측정소의 데이터가 null이면, 다음으로 가까운 측정소 중 데이터가 있는 것을 사용합니다.
  * 위치 권한이 없거나 실패 시 에러를 throw합니다.
  */
 export const getNearestStationAir = async () => {
   const loc = await getCurrentLocation();
-  const nearest = await findNearestStation(loc.latitude, loc.longitude);
-  const air = await getAirForStation(nearest.name);
+  const nearestStations = await findNearestStations(loc.latitude, loc.longitude);
+  
+  // 데이터가 있는 가장 가까운 측정소 찾기
+  let selectedStation = nearestStations[0];
+  let air = await getAirForStation(selectedStation.name);
+  
+  // 가장 가까운 측정소의 데이터가 null이면 다음으로 가까운 측정소 확인
+  if (!air || air.pm10 === null || air.pm25 === null) {
+    for (let i = 1; i < nearestStations.length; i++) {
+      const candidate = nearestStations[i];
+      const candidateAir = await getAirForStation(candidate.name);
+      if (candidateAir && candidateAir.pm10 !== null && candidateAir.pm25 !== null) {
+        selectedStation = candidate;
+        air = candidateAir;
+        break;
+      }
+    }
+  }
+  
   return {
     location: loc,
-    nearestStation: nearest,
+    nearestStation: selectedStation,
     air,
   };
 };

@@ -8,10 +8,8 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  fetch:
+  import:
     runs-on: ubuntu-latest
-    env:
-      DISABLE_FETCH: 'true'
     permissions:
       contents: write
     steps:
@@ -27,12 +25,9 @@ jobs:
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
 
-      - name: Run fetch script
-        if: env.DISABLE_FETCH != 'true'
-        env:
-          SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
+      - name: Import from Excel
         run: |
-          npm run fetch:air
+          npm run import:air
 
       - name: Commit and push if changed
         run: |
