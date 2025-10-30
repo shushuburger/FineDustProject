@@ -29,6 +29,7 @@ jobs:
       - name: Run fetch script
         env:
           SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
+          CITY_FILTER: 대전
         run: |
           npm run fetch:air
 
