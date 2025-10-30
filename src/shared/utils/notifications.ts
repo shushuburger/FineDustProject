@@ -7,7 +7,6 @@
  */
 export const requestNotificationPermission = async (): Promise<boolean> => {
   if (!('Notification' in window)) {
-    console.log('이 브라우저는 알림을 지원하지 않습니다.')
     return false
   }
 
@@ -33,10 +32,8 @@ export const registerServiceWorker = async (): Promise<void> => {
       await requestNotificationPermission()
       
       const registration = await navigator.serviceWorker.register('/sw.js')
-      console.log('✅ Service Worker 등록됨:', registration.scope)
-      console.log('✅ 알림 권한:', Notification.permission)
     } catch (error) {
-      console.error('❌ Service Worker 등록 실패:', error)
+      // silent
     }
   }
 }
@@ -53,7 +50,6 @@ let currentMissionTitle: string | undefined = undefined
  */
 export const updateNotificationMission = (missionTitle: string) => {
   currentMissionTitle = missionTitle
-  console.log('📝 미션 알림 내용 업데이트:', missionTitle)
 }
 
 /**
@@ -72,9 +68,8 @@ export const scheduleBackgroundNotification = async (delay: number = 10000, miss
       
       // Service Worker로 메시지 전송
       registration.active?.postMessage(message)
-      console.log('📤 Service Worker로 알림 스케줄 요청 전송:', message)
     } catch (error) {
-      console.error('❌ Service Worker 메시지 전송 실패:', error)
+      // silent
     }
   }
 }
@@ -87,14 +82,11 @@ export const scheduleNotificationOnUnload = (delay: number = 10000, missionTitle
 
   // 이미 설정되었으면 리턴
   if (hasListenerAdded) {
-    console.log('⚠️ 이미 알림 스케줄링이 설정되어 있습니다.')
     return
   }
 
   // beforeunload 이벤트 등록 - 브라우저를 닫을 때만 알림 스케줄링
   const beforeUnloadHandler = () => {
-    console.log('🚪 브라우저 닫힘 감지 - 알림 스케줄링 시작')
-    console.log('현재 알림 권한:', Notification.permission)
     
     // Service Worker로 메시지 전송
     if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
@@ -106,16 +98,13 @@ export const scheduleNotificationOnUnload = (delay: number = 10000, missionTitle
       
       try {
         navigator.serviceWorker.controller.postMessage(message)
-        console.log('📤 Service Worker로 알림 요청 전송:', message)
       } catch (error) {
-        console.error('❌ 메시지 전송 실패:', error)
+        // silent
       }
     }
   }
   
   window.addEventListener('beforeunload', beforeUnloadHandler)
   hasListenerAdded = true
-  
-  console.log('✅ 브라우저 닫힘 감지 설정 완료 (브라우저 닫은 후 10초 뒤 알림 표시)')
 }
 

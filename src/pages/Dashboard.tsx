@@ -2,7 +2,7 @@ import { House3D } from '@/widgets/House3D'
 import { DustInfo } from '@/widgets/DustInfo/DustInfo'
 import { useMediaQuery } from 'react-responsive'
 import { useState, useEffect } from 'react'
-import { fetchDustData, getCurrentLocation, formatCurrentTime, getPM10Grade } from '@/shared/api/dustApi'
+import { getCurrentLocation, formatCurrentTime, getPM10Grade, getNearestStationName, getStationRealtimeDust } from '@/shared/api/dustApi'
 import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import type { TodoRealLifeAction } from '@/shared/types/todo'
 import todoListData from '@/assets/data/todoList.json'
@@ -174,16 +174,16 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
         setIsLoading(true)
         setError(null)
         
-        // 미세먼지 데이터와 위치 정보를 병렬로 가져오기
-        const [dustApiData, location] = await Promise.all([
-          fetchDustData(),
-          getCurrentLocation()
-        ])
+        // 위치 정보 가져오기
+        const location = await getCurrentLocation()
         
-        // 현재 위치의 미세먼지 데이터 찾기
-        const currentDustData = dustApiData[location.address]
-        
-        setDustData(currentDustData || null)
+        // 근접 측정소 조회 후 실시간 대기정보 가져오기
+        let currentDustData: DustData | null = null
+        try {
+          const nearest = await getNearestStationName()
+          currentDustData = await getStationRealtimeDust(nearest)
+        } catch {}
+        setDustData(currentDustData)
         setLocationInfo(location)
         setCurrentTime(formatCurrentTime())
         
@@ -242,11 +242,18 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
           localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions }))
         }
         
-        // 표정 상태 업데이트 (testPm10이 없을 때만)
+        // 표정 상태 업데이트 (testPm10 우선)
         if (!testPm10 && currentDustData?.PM10 !== undefined) {
-          const pm10Grade = getPM10Grade(currentDustData.PM10);
-          const mood = getDustMood(pm10Grade);
-          setDustMood(mood);
+          const pm10Grade = getPM10Grade(currentDustData.PM10)
+          const mood = getDustMood(pm10Grade)
+          setDustMood(mood)
+        }
+        // 근접 측정소 이름 조회 (로그 확인용)
+        try {
+          const nearest = await getNearestStationName()
+          console.log('가장 가까운 측정소:', nearest)
+        } catch (e) {
+          console.warn('근접 측정소 조회 실패:', e)
         }
         
       } catch (err) {
@@ -281,7 +288,6 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
       const randomMission = randomMissions[Math.floor(Math.random() * randomMissions.length)]
       // 미션 제목만 업데이트 (이벤트 리스너는 이미 등록됨)
       updateNotificationMission(randomMission.title)
-      console.log('미션 알림 업데이트:', randomMission.title)
     }
   }, [randomMissions])
 
