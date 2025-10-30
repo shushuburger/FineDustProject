@@ -78,13 +78,12 @@ async function fetchStation(stationName) {
 }
 
 async function main() {
-  // KST(Asia/Seoul) 기준 07:00~22:59, 추가로 02:00~04:59에만 실행 (그 외 시간 건너뜀)
+  // KST(Asia/Seoul) 기준 05:00~20:59에만 실행 (그 외 시간 건너뜀)
   const nowSeoul = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }))
   const kstHour = nowSeoul.getHours()
-  const inDayWindow = kstHour >= 7 && kstHour <= 20
-  const inTestWindow = kstHour >= 2 && kstHour <= 4
-  if (!inDayWindow && !inTestWindow) {
-    console.log('KST 07:00~22:59 또는 02:00~04:59에만 수집합니다. 현재 시각(KST):', nowSeoul.toISOString())
+  const inDayWindow = kstHour >= 5 && kstHour <= 20
+  if (!inDayWindow) {
+    console.log('KST 05:00~20:59에만 수집합니다. 현재 시각(KST):', nowSeoul.toISOString())
     return
   }
 
