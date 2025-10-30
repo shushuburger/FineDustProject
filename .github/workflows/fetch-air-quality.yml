@@ -10,6 +10,8 @@ on:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    env:
+      DISABLE_FETCH: 'true'
     permissions:
       contents: write
     steps:
@@ -26,6 +28,7 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Run fetch script
+        if: env.DISABLE_FETCH != 'true'
         env:
           SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
         run: |
