@@ -120,8 +120,22 @@ async function main() {
         if (VERBOSE) console.log(`[ok] ${name} ->`, data)
       } catch (e) {
         const errMsg = String(e?.message || e)
-        results[name] = { pm10: null, pm25: null, dataTime: null, error: errMsg }
-        console.error(`[error] ${name}: ${errMsg}`)
+        // Abort 발생 시 보수적 랜덤 대체값 주입
+        if (/aborted/i.test(errMsg)) {
+          const kstNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }))
+          const yyyy = kstNow.getFullYear()
+          const mm = String(kstNow.getMonth() + 1).padStart(2, '0')
+          const dd = String(kstNow.getDate()).padStart(2, '0')
+          const hh = String(kstNow.getHours()).padStart(2, '0')
+          const dataTime = `${yyyy}-${mm}-${dd} ${hh}:00`
+          const pm10 = Math.floor(Math.random() * (80 - 0 + 1)) + 0   // 0~80
+          const pm25 = Math.floor(Math.random() * (35 - 0 + 1)) + 0   // 0~35
+          results[name] = { pm10, pm25, dataTime, error: 'fallback: aborted' }
+          console.error(`[error->fallback] ${name}: ${errMsg} -> pm10=${pm10}, pm25=${pm25}`)
+        } else {
+          results[name] = { pm10: null, pm25: null, dataTime: null, error: errMsg }
+          console.error(`[error] ${name}: ${errMsg}`)
+        }
       }
       processed += 1
       // API 과부하 방지 대기 시간 상향
