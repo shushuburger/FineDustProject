@@ -1,7 +1,7 @@
 import { House3D } from '@/widgets/House3D'
 import { DustInfo } from '@/widgets/DustInfo/DustInfo'
 import { useMediaQuery } from 'react-responsive'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getCurrentLocation, formatCurrentTime, getPM10Grade, getNearestStationName, getStationRealtimeDust } from '@/shared/api/dustApi'
 import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import type { TodoRealLifeAction } from '@/shared/types/todo'
@@ -11,6 +11,49 @@ import './Dashboard.css'
 
 interface DashboardProps {
   onNavigateToProfile?: () => void
+}
+
+// 주소가 한 줄에 안 들어가는 경우에만 시/도와 나머지를 줄바꿈하여 표시
+const AddressDisplay = ({ address }: { address: string }) => {
+  const [shouldSplit, setShouldSplit] = useState(false)
+  const containerRef = useRef<HTMLSpanElement | null>(null)
+  const textRef = useRef<HTMLSpanElement | null>(null)
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      const container = containerRef.current
+      const text = textRef.current
+      if (!container || !text) return
+      // nowrap 상태에서 텍스트가 컨테이너 폭을 초과하면 줄바꿈 모드로 전환
+      setShouldSplit(text.scrollWidth > container.clientWidth)
+    }
+
+    checkOverflow()
+    const ro = new ResizeObserver(checkOverflow)
+    if (containerRef.current) ro.observe(containerRef.current)
+    window.addEventListener('resize', checkOverflow)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', checkOverflow)
+    }
+  }, [address])
+
+  const [first, ...rest] = address.split(' ')
+  const restText = rest.join(' ')
+
+  return (
+    <span ref={containerRef} style={{ display: 'inline-block', maxWidth: '100%' }}>
+      {shouldSplit ? (
+        <span style={{ lineHeight: 1.1 }}>
+          <span>{first}</span>
+          <br />
+          <span>{restText}</span>
+        </span>
+      ) : (
+        <span ref={textRef} style={{ whiteSpace: 'nowrap' }}>{address}</span>
+      )}
+    </span>
+  )
 }
 
 export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
@@ -348,7 +391,11 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                       <path d="M21 10C21 17 12 23 12 23S3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" strokeWidth="2"/>
                       <circle cx="12" cy="10" r="3" stroke="currentColor" strokeWidth="2"/>
                     </svg>
-                    <span>{locationInfo?.address || '위치 정보 로딩 중...'}</span>
+                    {locationInfo?.address ? (
+                      <AddressDisplay address={locationInfo.address} />
+                    ) : (
+                      <span>위치 정보 로딩 중...</span>
+                    )}
                   </div>
         </div>
         

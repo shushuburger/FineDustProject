@@ -1,10 +1,13 @@
 /* 스마트 홈 대시보드 전체 레이아웃 */
 .smart-home-dashboard {
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+@supports (height: 100dvh) {
+  .smart-home-dashboard { height: 100dvh; }
 }
 
 /* 상단 헤더 */
@@ -109,7 +112,10 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  height: calc(100vh - 64px);
+  height: calc(100svh - 64px);
+}
+@supports (height: 100dvh) {
+  .dashboard-content { height: calc(100dvh - 64px); }
 }
 
 /* 모바일 레이아웃 */
@@ -224,12 +230,15 @@
   position: fixed;
   top: 0;
   right: 0;
-  height: 100vh;
+  height: 100svh;
   width: 280px;
   z-index: 1000;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
   transform: translateX(100%);
   border-left: none;
+}
+@supports (height: 100dvh) {
+  .right-sidebar.mobile-overlay { height: 100dvh; }
 }
 
 .right-sidebar.mobile-overlay:not(.collapsed) {
@@ -517,10 +526,13 @@
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
   animation: fadeIn 0.3s ease;
+}
+@supports (height: 100dvh) {
+  .mobile-sidebar-backdrop { height: 100dvh; }
 }
 
 @keyframes fadeIn {
