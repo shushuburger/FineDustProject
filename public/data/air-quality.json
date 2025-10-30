@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-10-30T19:27:08.954Z",
+  "updatedAt": "2025-10-30T20:23:38.369Z",
   "count": 530,
   "data": {
     "강남구": {
@@ -147,16 +147,24 @@
       "error": "This operation was aborted"
     },
     "중랑구": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 39,
+      "pm25": 25,
+      "dataTime": "2025-10-31 04:00"
     },
     "가남읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+      "pm10": 68,
+      "pm25": 43,
+      "dataTime": "2025-10-31 04:00"
+    },
+    "고읍": {
+      "pm10": 44,
+      "pm25": 43,
+      "dataTime": "2025-10-31 04:00"
+    },
+    "고촌읍": {
+      "pm10": 45,
+      "pm25": 34,
+      "dataTime": "2025-10-31 04:00"
     },
     "가평": {
       "pm10": null,
@@ -182,47 +190,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "고읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "고잔동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
-    },
-    "광교동": {
-      "pm10": 55,
-      "pm25": null,
-      "dataTime": "2025-10-31 03:00"
-    },
-    "교문동": {
-      "pm10": 43,
-      "pm25": 27,
-      "dataTime": "2025-10-31 03:00"
-    },
-    "금곡동": {
-      "pm10": 33,
-      "pm25": 20,
-      "dataTime": "2025-10-31 03:00"
-    },
-    "고촌읍": {
-      "pm10": 42,
-      "pm25": 35,
-      "dataTime": "2025-10-31 03:00"
-    },
-    "공도읍": {
-      "pm10": 48,
-      "pm25": 34,
-      "dataTime": "2025-10-31 03:00"
-    },
-    "과천동": {
-      "pm10": 46,
-      "pm25": 32,
-      "dataTime": "2025-10-31 03:00"
     },
     "고천동": {
       "pm10": null,
@@ -231,6 +203,36 @@
       "error": "This operation was aborted"
     },
     "곤지암": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "공도읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "과천동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "광교동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "교문동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "금곡동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -434,6 +436,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "선단동": {
+      "pm10": 45,
+      "pm25": 43,
+      "dataTime": "2025-10-31 04:00"
+    },
     "새솔동": {
       "pm10": null,
       "pm25": null,
@@ -441,12 +448,6 @@
       "error": "This operation was aborted"
     },
     "서신면": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "선단동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -476,11 +477,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "시화산단": {
-      "pm10": 70,
-      "pm25": 53,
-      "dataTime": "2025-10-31 03:00"
-    },
     "송산3동": {
       "pm10": null,
       "pm25": null,
@@ -494,6 +490,12 @@
       "error": "This operation was aborted"
     },
     "수지": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "시화산단": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -529,19 +531,28 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "양평읍": {
+      "pm10": 42,
+      "pm25": 24,
+      "dataTime": "2025-10-31 04:00"
+    },
+    "오남읍": {
+      "pm10": 59,
+      "pm25": 31,
+      "dataTime": "2025-10-31 04:00"
+    },
     "안양8동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "안중": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
+    "오정동": {
+      "pm10": 54,
+      "pm25": 41,
+      "dataTime": "2025-10-31 04:00"
     },
-    "양평읍": {
+    "안중": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -559,19 +570,7 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "오남읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "오산동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "오정동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -625,6 +624,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "전곡": {
+      "pm10": 55,
+      "pm25": 36,
+      "dataTime": "2025-10-31 04:00"
+    },
     "의정부1동": {
       "pm10": null,
       "pm25": null,
@@ -667,17 +671,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "중앙동(경기)": {
-      "pm10": 43,
-      "pm25": 32,
-      "dataTime": "2025-10-31 03:00"
-    },
-    "전곡": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "정왕동": {
       "pm10": null,
       "pm25": null,
@@ -703,6 +696,12 @@
       "error": "This operation was aborted"
     },
     "중2동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "중앙동(경기)": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -816,6 +815,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "논현": {
+      "pm10": 51,
+      "pm25": 36,
+      "dataTime": "2025-10-31 04:00"
+    },
     "고잔": {
       "pm10": null,
       "pm25": null,
@@ -829,12 +833,6 @@
       "error": "This operation was aborted"
     },
     "길상": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "논현": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -912,6 +910,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "원당": {
+      "pm10": 52,
+      "pm25": 37,
+      "dataTime": "2025-10-31 04:00"
+    },
     "영종": {
       "pm10": null,
       "pm25": null,
@@ -925,12 +928,6 @@
       "error": "This operation was aborted"
     },
     "운서": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "원당": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -1051,9 +1048,10 @@
       "error": "This operation was aborted"
     },
     "중앙동(강원)": {
-      "pm10": 37,
-      "pm25": 23,
-      "dataTime": "2025-10-31 03:00"
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
     },
     "중앙로": {
       "pm10": null,
@@ -1199,6 +1197,16 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "성동면": {
+      "pm10": 34,
+      "pm25": 24,
+      "dataTime": "2025-10-31 04:00"
+    },
+    "송산면": {
+      "pm10": 76,
+      "pm25": 50,
+      "dataTime": "2025-10-31 04:00"
+    },
     "부여읍": {
       "pm10": null,
       "pm25": null,
@@ -1229,12 +1237,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "성동면": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "성연면": {
       "pm10": null,
       "pm25": null,
@@ -1242,12 +1244,6 @@
       "error": "This operation was aborted"
     },
     "성황동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "송산면": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -1434,34 +1430,16 @@
       "error": "This operation was aborted"
     },
     "단성면": {
-      "pm10": 16,
-      "pm25": 13,
-      "dataTime": "2025-10-31 04:00"
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
     },
     "단양읍": {
-      "pm10": 18,
-      "pm25": 8,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "봉명동": {
-      "pm10": 45,
-      "pm25": 32,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "보은읍": {
-      "pm10": 25,
-      "pm25": 15,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "산남동": {
-      "pm10": 32,
-      "pm25": 22,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "매포읍": {
-      "pm10": 25,
-      "pm25": 18,
-      "dataTime": "2025-10-31 04:00"
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
     },
     "덕산읍": {
       "pm10": null,
@@ -1475,7 +1453,31 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "매포읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "보은읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "봉명동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "사천동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "산남동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -1529,11 +1531,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "진천읍": {
-      "pm10": 44,
-      "pm25": 33,
-      "dataTime": "2025-10-31 04:00"
-    },
     "용담동": {
       "pm10": null,
       "pm25": null,
@@ -1570,6 +1567,12 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "진천읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "청풍면": {
       "pm10": null,
       "pm25": null,
@@ -1581,6 +1584,16 @@
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
+    },
+    "전의면": {
+      "pm10": 32,
+      "pm25": 22,
+      "dataTime": "2025-10-31 05:00"
+    },
+    "한솔동": {
+      "pm10": 23,
+      "pm25": 12,
+      "dataTime": "2025-10-31 05:00"
     },
     "호암동": {
       "pm10": null,
@@ -1606,28 +1619,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "전의면": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "조치원읍": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
-    },
-    "한솔동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "대연동": {
-      "pm10": 20,
-      "pm25": 8,
-      "dataTime": "2025-10-31 04:00"
     },
     "개금동": {
       "pm10": null,
@@ -1671,11 +1667,22 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "대연동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "대저동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
+    },
+    "연산동": {
+      "pm10": 17,
+      "pm25": 17,
+      "dataTime": "2025-10-31 05:00"
     },
     "덕천동": {
       "pm10": null,
@@ -1702,12 +1709,6 @@
       "error": "This operation was aborted"
     },
     "수정동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "연산동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -1773,6 +1774,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "범서읍": {
+      "pm10": 20,
+      "pm25": 18,
+      "dataTime": "2025-10-31 05:00"
+    },
     "화명동": {
       "pm10": null,
       "pm25": null,
@@ -1809,37 +1815,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "범서읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "상남리": {
-      "pm10": 15,
-      "pm25": 14,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "성남동": {
-      "pm10": 18,
-      "pm25": 12,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "선암동": {
-      "pm10": 16,
-      "pm25": 8,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "송정동": {
-      "pm10": 18,
-      "pm25": 11,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "여천동(울산)": {
-      "pm10": 34,
-      "pm25": 15,
-      "dataTime": "2025-10-31 04:00"
-    },
     "부곡동(울산)": {
       "pm10": null,
       "pm25": null,
@@ -1858,13 +1833,48 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "상남리": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "선암동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "성남동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "송정동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "신정동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "남산1동": {
+      "pm10": 27,
+      "pm25": 15,
+      "dataTime": "2025-10-31 05:00"
+    },
     "약사동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "여천동(울산)": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -1895,12 +1905,6 @@
       "error": "This operation was aborted"
     },
     "군위읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "남산1동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -1954,6 +1958,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "태전동": {
+      "pm10": 19,
+      "pm25": 9,
+      "dataTime": "2025-10-31 05:00"
+    },
     "시지동": {
       "pm10": null,
       "pm25": null,
@@ -1996,22 +2005,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "태전동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "호림동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
-    },
-    "공단동": {
-      "pm10": 40,
-      "pm25": 27,
-      "dataTime": "2025-10-31 04:00"
     },
     "화원읍": {
       "pm10": null,
@@ -2032,6 +2030,12 @@
       "error": "This operation was aborted"
     },
     "가흥동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "공단동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2103,16 +2107,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "양덕동": {
-      "pm10": 15,
-      "pm25": 17,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "영주동": {
-      "pm10": 36,
-      "pm25": 23,
-      "dataTime": "2025-10-31 04:00"
-    },
     "성주군": {
       "pm10": null,
       "pm25": null,
@@ -2137,6 +2131,12 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "양덕동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "연일읍": {
       "pm10": null,
       "pm25": null,
@@ -2150,6 +2150,12 @@
       "error": "This operation was aborted"
     },
     "영양군": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "영주동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2203,16 +2209,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "진미동": {
-      "pm10": 26,
-      "pm25": 21,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "장량동": {
-      "pm10": 19,
-      "pm25": 14,
-      "dataTime": "2025-10-31 04:00"
-    },
     "율곡동": {
       "pm10": null,
       "pm25": null,
@@ -2220,6 +2216,12 @@
       "error": "This operation was aborted"
     },
     "의성읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "장량동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2243,13 +2245,18 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "청림동": {
+      "pm10": 50,
+      "pm25": 35,
+      "dataTime": "2025-10-31 05:00"
+    },
     "진량읍": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "청림동": {
+    "진미동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2393,11 +2400,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "삼방동": {
-      "pm10": 23,
-      "pm25": 14,
-      "dataTime": "2025-10-31 04:00"
-    },
     "사파동": {
       "pm10": null,
       "pm25": null,
@@ -2405,6 +2407,12 @@
       "error": "This operation was aborted"
     },
     "산청읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "삼방동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2488,11 +2496,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "고흥읍": {
-      "pm10": 15,
-      "pm25": 2,
-      "dataTime": "2025-10-31 04:00"
-    },
     "창녕읍": {
       "pm10": null,
       "pm25": null,
@@ -2529,7 +2532,18 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "대불": {
+      "pm10": 34,
+      "pm25": 27,
+      "dataTime": "2025-10-31 05:00"
+    },
     "강진읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "고흥읍": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2565,12 +2579,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "대불": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "덕충동": {
       "pm10": null,
       "pm25": null,
@@ -2582,16 +2590,6 @@
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
-    },
-    "서강동": {
-      "pm10": 11,
-      "pm25": 6,
-      "dataTime": "2025-10-31 04:00"
-    },
-    "봉강면": {
-      "pm10": 8,
-      "pm25": 5,
-      "dataTime": "2025-10-31 04:00"
     },
     "문수동": {
       "pm10": null,
@@ -2611,6 +2609,12 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "봉강면": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "부흥동": {
       "pm10": null,
       "pm25": null,
@@ -2623,7 +2627,18 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "연향동": {
+      "pm10": 12,
+      "pm25": 11,
+      "dataTime": "2025-10-31 05:00"
+    },
     "삼일동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
+    "서강동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2654,12 +2669,6 @@
       "error": "This operation was aborted"
     },
     "여천동(여수)": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "연향동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2713,6 +2722,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "호두리": {
+      "pm10": 9,
+      "pm25": 7,
+      "dataTime": "2025-10-31 05:00"
+    },
     "중동": {
       "pm10": null,
       "pm25": null,
@@ -2744,12 +2758,6 @@
       "error": "This operation was aborted"
     },
     "해남읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "호두리": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -2869,11 +2877,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "사정동": {
-      "pm10": 66,
-      "pm25": 22,
-      "dataTime": "2025-10-31 04:00"
-    },
     "노송동": {
       "pm10": null,
       "pm25": null,
@@ -2910,6 +2913,22 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "송천동": {
+      "pm10": 20,
+      "pm25": 7,
+      "dataTime": "2025-10-31 05:00"
+    },
+    "순창읍": {
+      "pm10": 24,
+      "pm25": 12,
+      "dataTime": "2025-10-31 05:00"
+    },
+    "사정동": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "삼기면": {
       "pm10": null,
       "pm25": null,
@@ -2929,18 +2948,6 @@
       "error": "This operation was aborted"
     },
     "소룡동2": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "송천동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "순창읍": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -3000,6 +3007,11 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "죽항동": {
+      "pm10": 9,
+      "pm25": 11,
+      "dataTime": "2025-10-31 05:00"
+    },
     "요촌동": {
       "pm10": null,
       "pm25": null,
@@ -3036,12 +3048,6 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
-    "죽항동": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
     "진안읍": {
       "pm10": null,
       "pm25": null,
@@ -3059,11 +3065,6 @@
       "pm25": null,
       "dataTime": null,
       "error": "This operation was aborted"
-    },
-    "대정읍": {
-      "pm10": 11,
-      "pm25": 4,
-      "dataTime": "2025-10-31 04:00"
     },
     "팔봉동": {
       "pm10": null,
@@ -3101,6 +3102,22 @@
       "dataTime": null,
       "error": "This operation was aborted"
     },
+    "애월읍": {
+      "pm10": 13,
+      "pm25": 7,
+      "dataTime": "2025-10-31 05:00"
+    },
+    "화북동": {
+      "pm10": 14,
+      "pm25": 8,
+      "dataTime": "2025-10-31 05:00"
+    },
+    "대정읍": {
+      "pm10": null,
+      "pm25": null,
+      "dataTime": null,
+      "error": "This operation was aborted"
+    },
     "동홍동": {
       "pm10": null,
       "pm25": null,
@@ -3108,12 +3125,6 @@
       "error": "This operation was aborted"
     },
     "성산읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "애월읍": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
@@ -3138,12 +3149,6 @@
       "error": "This operation was aborted"
     },
     "한림읍": {
-      "pm10": null,
-      "pm25": null,
-      "dataTime": null,
-      "error": "This operation was aborted"
-    },
-    "화북동": {
       "pm10": null,
       "pm25": null,
       "dataTime": null,
