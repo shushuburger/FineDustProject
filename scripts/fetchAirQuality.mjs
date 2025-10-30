@@ -22,7 +22,7 @@ const VERBOSE = process.env.VERBOSE === '1'
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 // fetch with timeout
-async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
   const controller = new AbortController()
   const id = setTimeout(() => controller.abort(), timeoutMs)
   try {
@@ -64,9 +64,9 @@ function toNumberOrNull(v) {
 
 async function fetchStation(stationName) {
   const url = buildUrl(stationName)
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 5; attempt++) {
     try {
-      const res = await fetchWithTimeout(url, {}, 12000)
+      const res = await fetchWithTimeout(url, {}, 20000)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const json = await res.json()
       const parsed = parseItem(json)
@@ -79,9 +79,9 @@ async function fetchStation(stationName) {
       throw new Error(details)
     } catch (err) {
       if (VERBOSE) console.warn(`[warn] ${stationName} attempt ${attempt}: ${String(err?.message || err)}`)
-      if (attempt === 3) throw err
-      // 점진 대기 후 재시도
-      await sleep(250 * attempt)
+      if (attempt === 5) throw err
+      // 점진 대기 후 재시도 (보수적으로 상향)
+      await sleep(500 * attempt)
     }
   }
 }
@@ -106,7 +106,7 @@ async function main() {
   }
   console.log(`Using ${stations.length} Daejeon stations from stations_with_coords.json`)
 
-  const concurrency = 8
+  const concurrency = 4
   const queue = [...stations]
   const results = {}
   let processed = 0
@@ -124,8 +124,8 @@ async function main() {
         console.error(`[error] ${name}: ${errMsg}`)
       }
       processed += 1
-      // API 과부하 방지 소폭 대기
-      await sleep(50)
+      // API 과부하 방지 대기 시간 상향
+      await sleep(150)
     }
   }
 
