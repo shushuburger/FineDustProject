@@ -1,5 +1,5 @@
 import Spline from '@splinetool/react-spline'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import type { Application } from '@splinetool/runtime'
 import behavioralGuidelines from '@/assets/data/behavioral_guidelines.json'
@@ -23,9 +23,8 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
   const [modalTitle, setModalTitle] = useState('')
   const [modalProfileApplied, setModalProfileApplied] = useState<string[]>([])
   const [isReadyForModal, setIsReadyForModal] = useState(false)
+  const [nowSelectedObject, setNowSelectedObject] = useState<string>('none') // 현재 선택된 요소
   const isLaptop = useMediaQuery({ minWidth: 1024 })
-  const prevObjectRef = useRef<string | null>(null)
-  const firstChangeSkippedRef = useRef(false)
 
   // PM10 값에 따라 행동 방안 등급 결정
   const getDustLevel = (pm10?: number): 'good' | 'moderate' | 'bad' | 'very_bad' => {
@@ -40,132 +39,92 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
   useEffect(() => {
     if (!splineApp || isLoading) return
 
-    // 1초 후 현재 값을 초기값으로 설정하고 모달 활성화
+    // 1초 후 모달 활성화 (초기값은 이미 'none'으로 설정됨)
     const timer = setTimeout(() => {
-      try {
-        const value = splineApp.getVariable('nowObject')
-        if (value !== undefined) {
-          prevObjectRef.current = String(value)
-        } else {
-          prevObjectRef.current = 'none'
-        }
-        setIsReadyForModal(true)
-        firstChangeSkippedRef.current = false // 초기화 시 리셋
-      } catch {
-        prevObjectRef.current = 'none'
-        setIsReadyForModal(true)
-        firstChangeSkippedRef.current = false
-      }
+      setIsReadyForModal(true)
     }, 1000)
 
     return () => clearTimeout(timer)
-  }, [splineApp, isLoading])
+  }, [splineApp, isLoading, nowSelectedObject])
 
-  // Spline 변수 변화 감지 및 모달 표시
+  // nowSelectedObject가 변경되면 모달 표시
   useEffect(() => {
-    if (!splineApp || !isReadyForModal) return
+    if (!isReadyForModal || !splineApp) return
 
-    const interval = setInterval(() => {
-      try {
-        const value = splineApp.getVariable('nowObject')
-        if (value !== undefined) {
-          const objectName = String(value)
-          const prevObject = prevObjectRef.current
-          
-          // 값이 실제로 바뀌었을 때
-          if (objectName !== prevObject) {
-            // 첫 번째 변화는 무시 (초기 설정으로 인한 변화)
-            if (!firstChangeSkippedRef.current) {
-              firstChangeSkippedRef.current = true
-              prevObjectRef.current = objectName
-              return
-            }
-            
-            // 현재 값이 'none'이 아니고, 행동 방안 데이터에 해당하는 요소일 때 모달 표시
-            if (objectName !== 'none' && behavioralGuidelines.guides[objectName as keyof typeof behavioralGuidelines.guides]) {
-              const dustLevel = getDustLevel(pm10Value)
-              const guide = behavioralGuidelines.guides[objectName as keyof typeof behavioralGuidelines.guides]
-              let content = [...guide.baseMessages[dustLevel]]
-              const profileApplied: string[] = []
-              
-              // 조건부 메시지 추가
-              if ('conditionalMessages' in guide && guide.conditionalMessages) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const conditionalMsgs = guide.conditionalMessages as any
-                
-                // 건강 상태 확인
-                if (userHealth && conditionalMsgs[`health_${userHealth}`]) {
-                  const healthMsg = conditionalMsgs[`health_${userHealth}`]
-                  if (healthMsg[dustLevel]) {
-                    content = [...content, ...healthMsg[dustLevel]]
-                    profileApplied.push('건강 상태')
-                  }
-                }
-                
-                // 반려견 확인
-                if (userPet === 'dog' && conditionalMsgs.pet_dog) {
-                  const petMsg = conditionalMsgs.pet_dog
-                  if (petMsg[dustLevel]) {
-                    content = [...content, ...petMsg[dustLevel]]
-                    profileApplied.push('반려동물')
-                  }
-                }
-                
-                // 연령대 확인
-                if (userAge) {
-                  // senior를 elderly로 매핑
-                  const ageKey = userAge === 'senior' ? 'age_elderly' : `age_${userAge}`
-                  if (conditionalMsgs[ageKey]) {
-                    const ageMsg = conditionalMsgs[ageKey]
-                    if (ageMsg[dustLevel]) {
-                      content = [...content, ...ageMsg[dustLevel]]
-                      profileApplied.push('연령대')
-                    }
-                  }
-                }
-                
-                // 아이 확인
-                if (userChild && userChild !== 'none' && conditionalMsgs.child) {
-                  const childMsg = conditionalMsgs.child
-                  if (childMsg[dustLevel]) {
-                    content = [...content, ...childMsg[dustLevel]]
-                    profileApplied.push('아이')
-                  }
-                }
-              }
-              
-              // 객체 이름을 한글로 변환
-              const objectNames: Record<string, string> = {
-                window: '창문',
-                dog: '반려견',
-                plants: '식물',
-                sofa: '가구',
-                light: '조명',
-                stove: '가스레인지',
-                sink: '세면대',
-                fan: '공기청정기',
-                door: '출입문',
-                refrigeator: '냉장고',
-                clean: '청소'
-              }
-              
-              setModalTitle(objectNames[objectName] || objectName)
-              setModalContent(content)
-              setModalProfileApplied(profileApplied)
-              setShowModal(true)
-            }
-            
-            // 이전 값 업데이트
-            prevObjectRef.current = objectName
+    // nowSelectedObject가 'none'이 아니고, 행동 방안 데이터에 해당하는 요소일 때 모달 표시
+    if (nowSelectedObject !== 'none' && behavioralGuidelines.guides[nowSelectedObject as keyof typeof behavioralGuidelines.guides]) {
+      const dustLevel = getDustLevel(pm10Value)
+      const guide = behavioralGuidelines.guides[nowSelectedObject as keyof typeof behavioralGuidelines.guides]
+      let content = [...guide.baseMessages[dustLevel]]
+      const profileApplied: string[] = []
+      
+      // 조건부 메시지 추가
+      if ('conditionalMessages' in guide && guide.conditionalMessages) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const conditionalMsgs = guide.conditionalMessages as any
+        
+        // 건강 상태 확인
+        if (userHealth && conditionalMsgs[`health_${userHealth}`]) {
+          const healthMsg = conditionalMsgs[`health_${userHealth}`]
+          if (healthMsg[dustLevel]) {
+            content = [...content, ...healthMsg[dustLevel]]
+            profileApplied.push('건강 상태')
           }
         }
-      } catch {
-        // 변수 읽기 실패는 무시
+        
+        // 반려견 확인
+        if (userPet === 'dog' && conditionalMsgs.pet_dog) {
+          const petMsg = conditionalMsgs.pet_dog
+          if (petMsg[dustLevel]) {
+            content = [...content, ...petMsg[dustLevel]]
+            profileApplied.push('반려동물')
+          }
+        }
+        
+        // 연령대 확인
+        if (userAge) {
+          // senior를 elderly로 매핑
+          const ageKey = userAge === 'senior' ? 'age_elderly' : `age_${userAge}`
+          if (conditionalMsgs[ageKey]) {
+            const ageMsg = conditionalMsgs[ageKey]
+            if (ageMsg[dustLevel]) {
+              content = [...content, ...ageMsg[dustLevel]]
+              profileApplied.push('연령대')
+            }
+          }
+        }
+        
+        // 아이 확인
+        if (userChild && userChild !== 'none' && conditionalMsgs.child) {
+          const childMsg = conditionalMsgs.child
+          if (childMsg[dustLevel]) {
+            content = [...content, ...childMsg[dustLevel]]
+            profileApplied.push('아이')
+          }
+        }
       }
-    }, 500)
-
-    return () => clearInterval(interval)
-  }, [splineApp, pm10Value, isReadyForModal, userHealth, userAge, userChild, userPet])
+      
+      // 객체 이름을 한글로 변환
+      const objectNames: Record<string, string> = {
+        window: '창문',
+        dog: '반려견',
+        plants: '식물',
+        sofa: '가구',
+        light: '조명',
+        stove: '가스레인지',
+        sink: '세면대',
+        fan: '공기청정기',
+        door: '출입문',
+        refrigeator: '냉장고',
+        clean: '청소'
+      }
+      
+      setModalTitle(objectNames[nowSelectedObject] || nowSelectedObject)
+      setModalContent(content)
+      setModalProfileApplied(profileApplied)
+      setShowModal(true)
+    }
+  }, [nowSelectedObject, isReadyForModal, splineApp, pm10Value, userHealth, userAge, userChild, userPet])
 
   const handleSplineLoad = (app: Application) => {
     setSplineApp(app)
@@ -175,7 +134,25 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
 
   return (
     <main className={`house-3d-main ${!isLaptop ? 'mobile-layout' : ''}`}>
-      <div className="house-3d-container">
+      <div 
+        className="house-3d-container"
+        onClick={() => {
+          // Spline 영역 클릭 시 nowObject 변수 값을 가져와서 nowSelectedObject에 저장
+          if (splineApp && isReadyForModal) {
+            try {
+              const value = splineApp.getVariable('nowObject')
+              if (value !== undefined) {
+                const objectName = String(value)
+                setNowSelectedObject(objectName)
+              } else {
+                setNowSelectedObject('none')
+              }
+            } catch {
+              setNowSelectedObject('none')
+            }
+          }
+        }}
+      >
         {isLoading && (
           <div className="loading-overlay">
             <div className="loading-spinner"></div>
@@ -200,8 +177,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
             justifyContent: 'center'
           }}
           onLoad={handleSplineLoad}
-          onError={(error) => {
-            console.error('❌ Spline loading error:', error)
+          onError={() => {
             setHasError(true)
             setIsLoading(false)
           }}
@@ -236,7 +212,11 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
 
       {/* 행동 방안 모달 */}
       {showModal && (
-        <div className="behavioral-modal-overlay" onClick={() => setShowModal(false)}>
+        <div className="behavioral-modal-overlay" onClick={() => {
+          setShowModal(false)
+          // 모달을 닫으면 nowSelectedObject를 none으로 설정
+          setNowSelectedObject('none')
+        }}>
           <div className="behavioral-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="behavioral-modal-header">
               <div>
@@ -251,7 +231,11 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                   </div>
                 )}
               </div>
-              <button className="behavioral-modal-close" onClick={() => setShowModal(false)}>
+              <button className="behavioral-modal-close" onClick={() => {
+                setShowModal(false)
+                // 모달을 닫으면 nowSelectedObject를 none으로 설정
+                setNowSelectedObject('none')
+              }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
