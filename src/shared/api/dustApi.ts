@@ -23,7 +23,12 @@ export const getAddressFromCoords = async (lat: number, lon: number): Promise<st
     }
     
     const data = await response.json();
-    const region = data.documents.find((doc: any) => doc.region_type === 'B');
+    interface KakaoDocument {
+      region_type: string;
+      region_1depth_name: string;
+      region_2depth_name: string;
+    }
+    const region = (data.documents as KakaoDocument[]).find((doc) => doc.region_type === 'B');
     
     if (region) {
       return `${region.region_1depth_name} ${region.region_2depth_name}`;

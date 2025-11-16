@@ -1,0 +1,162 @@
+.profile-info-card {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.profile-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.profile-info-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.profile-edit-button {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-edit-button:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.profile-info-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.profile-badge:hover {
+  border-color: #10b981;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+}
+
+.profile-badge-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.profile-badge-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.profile-badge-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.profile-badge-value {
+  font-size: 13px;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.profile-info-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #eff6ff;
+  border-radius: 6px;
+  border: 1px solid #bfdbfe;
+  margin-top: 12px;
+}
+
+.profile-info-note svg {
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.profile-info-note span {
+  font-size: 12px;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+.profile-info-empty {
+  text-align: center;
+  padding: 24px;
+}
+
+.profile-info-empty p {
+  margin: 0 0 16px 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.profile-setup-button {
+  padding: 10px 20px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-setup-button:hover {
+  background: #059669;
+}
+
+.profile-info-empty-state {
+  text-align: center;
+  padding: 16px;
+}
+
+.profile-info-empty-state p {
+  margin: 0 0 12px 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.profile-setup-button-small {
+  padding: 8px 16px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-setup-button-small:hover {
+  background: #059669;
+}
+
