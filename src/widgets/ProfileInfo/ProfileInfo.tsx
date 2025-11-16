@@ -66,7 +66,7 @@ export const ProfileInfo = ({ profile, onEditClick }: ProfileInfoProps) => {
   return (
     <div className="profile-info-card">
       <div className="profile-info-header">
-        <h3 className="profile-info-title">맞춤형 프로필</h3>
+        <h3 className="profile-info-title">프로필</h3>
         {onEditClick && (
           <button className="profile-edit-button" onClick={onEditClick} title="프로필 수정">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -83,7 +83,6 @@ export const ProfileInfo = ({ profile, onEditClick }: ProfileInfoProps) => {
             <div key={index} className="profile-badge">
               <span className="profile-badge-icon">{item.icon}</span>
               <div className="profile-badge-content">
-                <span className="profile-badge-label">{item.label}</span>
                 <span className="profile-badge-value">{item.value}</span>
               </div>
             </div>
@@ -106,7 +105,7 @@ export const ProfileInfo = ({ profile, onEditClick }: ProfileInfoProps) => {
           <path d="M12 16V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M12 8H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span>이 정보는 행동 가이드에 반영됩니다</span>
+        <span>행동 가이드 반영</span>
       </div>
     </div>
   )

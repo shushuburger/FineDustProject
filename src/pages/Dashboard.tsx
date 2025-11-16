@@ -508,6 +508,16 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                       <div className="mood-text">{dustMood.text}</div>
                     </div>
                   )}
+
+                  {/* 모바일 프로필 정보 오버레이 */}
+                  {!isLaptop && (
+                    <div className="profile-overlay-mobile">
+                      <ProfileInfo 
+                        profile={userProfile?.profile}
+                        onEditClick={onNavigateToProfile}
+                      />
+                    </div>
+                  )}
                 </main>
 
                 {/* 모바일에서 사이드바 오버레이 배경 */}
@@ -539,11 +549,13 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                           error={error || undefined}
                         />
 
-                        {/* 프로필 정보 섹션 */}
-                        <ProfileInfo 
-                          profile={userProfile?.profile}
-                          onEditClick={onNavigateToProfile}
-                        />
+                        {/* 프로필 정보 섹션 - 데스크톱에서만 표시 */}
+                        {isLaptop && (
+                          <ProfileInfo 
+                            profile={userProfile?.profile}
+                            onEditClick={onNavigateToProfile}
+                          />
+                        )}
                 
                 {/* 활동 섹션 */}
                 <div className="activity-section">
