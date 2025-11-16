@@ -21,6 +21,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
   const [showModal, setShowModal] = useState(false)
   const [modalContent, setModalContent] = useState<string[]>([])
   const [modalTitle, setModalTitle] = useState('')
+  const [modalProfileApplied, setModalProfileApplied] = useState<string[]>([])
   const [isReadyForModal, setIsReadyForModal] = useState(false)
   const isLaptop = useMediaQuery({ minWidth: 1024 })
   const prevObjectRef = useRef<string | null>(null)
@@ -50,7 +51,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
         }
         setIsReadyForModal(true)
         firstChangeSkippedRef.current = false // 초기화 시 리셋
-      } catch (error) {
+      } catch {
         prevObjectRef.current = 'none'
         setIsReadyForModal(true)
         firstChangeSkippedRef.current = false
@@ -85,9 +86,11 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
               const dustLevel = getDustLevel(pm10Value)
               const guide = behavioralGuidelines.guides[objectName as keyof typeof behavioralGuidelines.guides]
               let content = [...guide.baseMessages[dustLevel]]
+              const profileApplied: string[] = []
               
               // 조건부 메시지 추가
               if ('conditionalMessages' in guide && guide.conditionalMessages) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const conditionalMsgs = guide.conditionalMessages as any
                 
                 // 건강 상태 확인
@@ -95,6 +98,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                   const healthMsg = conditionalMsgs[`health_${userHealth}`]
                   if (healthMsg[dustLevel]) {
                     content = [...content, ...healthMsg[dustLevel]]
+                    profileApplied.push('건강 상태')
                   }
                 }
                 
@@ -103,6 +107,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                   const petMsg = conditionalMsgs.pet_dog
                   if (petMsg[dustLevel]) {
                     content = [...content, ...petMsg[dustLevel]]
+                    profileApplied.push('반려동물')
                   }
                 }
                 
@@ -114,6 +119,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                     const ageMsg = conditionalMsgs[ageKey]
                     if (ageMsg[dustLevel]) {
                       content = [...content, ...ageMsg[dustLevel]]
+                      profileApplied.push('연령대')
                     }
                   }
                 }
@@ -123,6 +129,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                   const childMsg = conditionalMsgs.child
                   if (childMsg[dustLevel]) {
                     content = [...content, ...childMsg[dustLevel]]
+                    profileApplied.push('아이')
                   }
                 }
               }
@@ -144,6 +151,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
               
               setModalTitle(objectNames[objectName] || objectName)
               setModalContent(content)
+              setModalProfileApplied(profileApplied)
               setShowModal(true)
             }
             
@@ -151,7 +159,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
             prevObjectRef.current = objectName
           }
         }
-      } catch (error) {
+      } catch {
         // 변수 읽기 실패는 무시
       }
     }, 500)
@@ -231,7 +239,18 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
         <div className="behavioral-modal-overlay" onClick={() => setShowModal(false)}>
           <div className="behavioral-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="behavioral-modal-header">
-              <h2 className="behavioral-modal-title">{modalTitle}</h2>
+              <div>
+                <h2 className="behavioral-modal-title">{modalTitle}</h2>
+                {modalProfileApplied.length > 0 && (
+                  <div className="behavioral-modal-profile-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span>프로필 반영: {modalProfileApplied.join(', ')}</span>
+                  </div>
+                )}
+              </div>
               <button className="behavioral-modal-close" onClick={() => setShowModal(false)}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

@@ -1,10 +1,12 @@
 import { House3D } from '@/widgets/House3D'
 import { DustInfo } from '@/widgets/DustInfo/DustInfo'
+import { ProfileInfo } from '@/widgets/ProfileInfo'
 import { useMediaQuery } from 'react-responsive'
 import { useState, useEffect } from 'react'
 import { formatCurrentTime, getPM10Grade, getNearestStationAir } from '@/shared/api/dustApi'
 import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import type { TodoRealLifeAction } from '@/shared/types/todo'
+import type { UserProfile } from '@/shared/types/profile'
 import todoListData from '@/assets/data/todoList.json'
 import { registerServiceWorker, scheduleNotificationOnUnload, updateNotificationMission } from '@/shared/utils/notifications'
 import './Dashboard.css'
@@ -38,9 +40,56 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   } | null>(null)
   const [showProfileModal, setShowProfileModal] = useState(false)
 
-  // 날짜 기반 시드로 랜덤 미션 선택 (하루 단위로 고정)
-  const getRandomMissions = (count: number = 5, seed?: string): TodoRealLifeAction[] => {
+  // 프로필 기반 미션 우선순위 계산
+  const getMissionPriority = (mission: TodoRealLifeAction, profile?: UserProfile): number => {
+    if (!profile) return 0
+    
+    let priority = 0
+    
+    // 건강 상태 기반 우선순위
+    if (profile.health === 'asthma' && mission.guidelineKey === 'fan') {
+      priority += 10 // 천식 환자는 공기청정기 우선
+    }
+    if (profile.health === 'allergy_rhinitis' && (mission.guidelineKey === 'sink' || mission.guidelineKey === 'clean')) {
+      priority += 8 // 알레르기 비염은 세정/청소 우선
+    }
+    if (profile.health === 'lung_disease' && mission.guidelineKey === 'door') {
+      priority += 9 // 폐질환자는 외출 관리 우선
+    }
+    
+    // 연령대 기반 우선순위
+    if (profile.ageGroup === 'senior' && mission.guidelineKey === 'refrigeator') {
+      priority += 5 // 노년층은 수분 섭취 우선
+    }
+    if (profile.ageGroup === 'child' && mission.guidelineKey === 'door') {
+      priority += 7 // 어린이는 외출 관리 우선
+    }
+    
+    // 아이 기반 우선순위
+    if (profile.child && profile.child !== 'none' && mission.guidelineKey === 'sofa') {
+      priority += 6 // 아이가 있으면 가구 청소 우선
+    }
+    
+    // 반려동물 기반 우선순위
+    if (profile.pet === 'dog' && mission.guidelineKey === 'dog') {
+      priority += 10 // 반려견이 있으면 반려견 관리 최우선
+    }
+    if (profile.pet === 'dog' && mission.guidelineKey === 'clean') {
+      priority += 7 // 반려견이 있으면 청소 우선
+    }
+    
+    return priority
+  }
+
+  // 날짜 기반 시드로 랜덤 미션 선택 (하루 단위로 고정, 프로필 기반 우선순위 적용)
+  const getRandomMissions = (count: number = 5, seed?: string, profile?: UserProfile): TodoRealLifeAction[] => {
     const allActions = todoListData.realLifeActions
+    
+    // 프로필 기반 우선순위 계산
+    const actionsWithPriority = allActions.map(action => ({
+      ...action,
+      priority: getMissionPriority(action, profile)
+    }))
     
     // 시드가 있으면 결정적 난수 생성
     if (seed) {
@@ -49,18 +98,32 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
         return x - Math.floor(x)
       }
       
-      const shuffled = [...allActions].sort((a, b) => {
+      // 우선순위가 높은 것부터 정렬, 같은 우선순위면 시드 기반 랜덤
+      const sorted = [...actionsWithPriority].sort((a, b) => {
+        if (b.priority !== a.priority) {
+          return b.priority - a.priority
+        }
         const seed1 = seed.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
         const seed2 = seed1 + a.id
         const seed3 = seed1 + b.id
         return seededRandom(seed2) - seededRandom(seed3)
       })
-      return shuffled.slice(0, count)
+      
+      // 우선순위가 높은 것들을 먼저 선택
+      const highPriority = sorted.filter(a => a.priority > 0).slice(0, count)
+      const remaining = sorted.filter(a => a.priority === 0).slice(0, count - highPriority.length)
+      return [...highPriority, ...remaining].slice(0, count)
     }
     
-    // 시드가 없으면 일반 랜덤
-    const shuffled = [...allActions].sort(() => 0.5 - Math.random())
-    return shuffled.slice(0, count)
+    // 시드가 없으면 우선순위 기반 정렬 후 랜덤
+    const sorted = [...actionsWithPriority].sort((a, b) => {
+      if (b.priority !== a.priority) {
+        return b.priority - a.priority
+      }
+      return 0.5 - Math.random()
+    })
+    
+    return sorted.slice(0, count)
   }
 
   // 오늘 날짜 가져오기 (YYYY-MM-DD 형식)
@@ -146,6 +209,12 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
           const profile = JSON.parse(savedProfile)
           setUserProfile(profile)
           setShowProfileModal(false)
+          
+          // 프로필이 변경되면 미션을 다시 선택 (프로필 반영)
+          const todayDate = getTodayDateString()
+          const newMissions = getRandomMissions(5, todayDate, profile.profile)
+          setRandomMissions(newMissions)
+          localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions: newMissions }))
         } catch (error) {
           console.error('프로필 정보 파싱 오류:', error)
         }
@@ -165,6 +234,7 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
       window.removeEventListener('storage', handleStorageChange)
       clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // 위치 정보 및 미세먼지 데이터 로딩
@@ -227,20 +297,20 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
               // 같은 날이면 저장된 미션 사용
               setRandomMissions(missions)
             } else {
-              // 다른 날이면 새로 선택
-              const newMissions = getRandomMissions(5, todayDate)
+              // 다른 날이면 새로 선택 (프로필 반영)
+              const newMissions = getRandomMissions(5, todayDate, userProfile?.profile)
               setRandomMissions(newMissions)
               localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions: newMissions }))
             }
-          } catch (error) {
-            // 파싱 에러 시 새로 선택
-            const missions = getRandomMissions(5, todayDate)
+          } catch {
+            // 파싱 에러 시 새로 선택 (프로필 반영)
+            const missions = getRandomMissions(5, todayDate, userProfile?.profile)
             setRandomMissions(missions)
             localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions }))
           }
         } else {
-          // 첫 방문 시
-          const missions = getRandomMissions(5, todayDate)
+          // 첫 방문 시 (프로필 반영)
+          const missions = getRandomMissions(5, todayDate, userProfile?.profile)
           setRandomMissions(missions)
           localStorage.setItem('dailyMissions', JSON.stringify({ date: todayDate, missions }))
         }
@@ -276,6 +346,7 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
     return () => {
       clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // randomMissions가 로드되면 알림 설정 업데이트
@@ -437,6 +508,16 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                       <div className="mood-text">{dustMood.text}</div>
                     </div>
                   )}
+
+                  {/* 모바일 프로필 정보 오버레이 */}
+                  {!isLaptop && (
+                    <div className="profile-overlay-mobile">
+                      <ProfileInfo 
+                        profile={userProfile?.profile}
+                        onEditClick={onNavigateToProfile}
+                      />
+                    </div>
+                  )}
                 </main>
 
                 {/* 모바일에서 사이드바 오버레이 배경 */}
@@ -467,6 +548,14 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                           isLoading={isLoading}
                           error={error || undefined}
                         />
+
+                        {/* 프로필 정보 섹션 - 데스크톱에서만 표시 */}
+                        {isLaptop && (
+                          <ProfileInfo 
+                            profile={userProfile?.profile}
+                            onEditClick={onNavigateToProfile}
+                          />
+                        )}
                 
                 {/* 활동 섹션 */}
                 <div className="activity-section">
@@ -495,14 +584,23 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                   
                   {/* 미션 체크리스트 */}
                   <div className="mission-checklist">
-                    {randomMissions.map((mission) => (
-                      <div key={mission.id} className="mission-item">
-                        <input type="checkbox" id={`mission${mission.id}`} className="mission-checkbox" />
-                        <label htmlFor={`mission${mission.id}`} className="mission-label">
-                          <span className="mission-text">{mission.title}</span>
-                        </label>
-                      </div>
-                    ))}
+                    {randomMissions.map((mission) => {
+                      const priority = getMissionPriority(mission, userProfile?.profile)
+                      const isRecommended = priority > 0
+                      return (
+                        <div key={mission.id} className={`mission-item ${isRecommended ? 'mission-recommended' : ''}`}>
+                          <input type="checkbox" id={`mission${mission.id}`} className="mission-checkbox" />
+                          <label htmlFor={`mission${mission.id}`} className="mission-label">
+                            {isRecommended && (
+                              <span className="mission-priority-badge" title="프로필 기반 추천">
+                                ⭐
+                              </span>
+                            )}
+                            <span className="mission-text">{mission.title}</span>
+                          </label>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
