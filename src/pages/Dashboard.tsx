@@ -355,7 +355,6 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
       const randomMission = randomMissions[Math.floor(Math.random() * randomMissions.length)]
       // 미션 제목만 업데이트 (이벤트 리스너는 이미 등록됨)
       updateNotificationMission(randomMission.title)
-      console.log('미션 알림 업데이트:', randomMission.title)
     }
   }, [randomMissions])
 

@@ -7,7 +7,6 @@
  */
 export const requestNotificationPermission = async (): Promise<boolean> => {
   if (!('Notification' in window)) {
-    console.log('이 브라우저는 알림을 지원하지 않습니다.')
     return false
   }
 
@@ -53,7 +52,6 @@ let currentMissionTitle: string | undefined = undefined
  */
 export const updateNotificationMission = (missionTitle: string) => {
   currentMissionTitle = missionTitle
-  console.log('📝 미션 알림 내용 업데이트:', missionTitle)
 }
 
 /**
