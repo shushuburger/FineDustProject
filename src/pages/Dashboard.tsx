@@ -8,6 +8,7 @@ import type { DustData, LocationInfo, DustGrade } from '@/shared/types/api'
 import type { TodoRealLifeAction } from '@/shared/types/todo'
 import type { UserProfile } from '@/shared/types/profile'
 import todoListData from '@/assets/data/todoList.json'
+import behavioralGuidelines from '@/assets/data/behavioral_guidelines.json'
 import { registerServiceWorker, scheduleNotificationOnUnload, updateNotificationMission } from '@/shared/utils/notifications'
 import './Dashboard.css'
 
@@ -39,6 +40,15 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
     }
   } | null>(null)
   const [showProfileModal, setShowProfileModal] = useState(false)
+  const [showBehavioralModal, setShowBehavioralModal] = useState(false)
+  const [behavioralModalGuides, setBehavioralModalGuides] = useState<Array<{
+    title: string
+    content: string[]
+    profileApplied: string[]
+    priority: number
+  }>>([])
+  const [buttonWidth, setButtonWidth] = useState<number | undefined>(undefined)
+  const [showMobileDustControls, setShowMobileDustControls] = useState(false)
 
   // 프로필 기반 미션 우선순위 계산
   const getMissionPriority = (mission: TodoRealLifeAction, profile?: UserProfile): number => {
@@ -372,6 +382,165 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
     }
   }, [testPm10, dustData])
 
+  // PM10 값에 따라 행동 방안 등급 결정
+  const getDustLevel = (pm10?: number): 'good' | 'moderate' | 'bad' | 'very_bad' => {
+    if (!pm10) return 'moderate'
+    if (pm10 <= 30) return 'good'
+    if (pm10 <= 80) return 'moderate'
+    if (pm10 <= 150) return 'bad'
+    return 'very_bad'
+  }
+
+  // 모든 행동 방안을 프로필 기반으로 정렬하여 가져오기
+  const getAllBehavioralGuides = () => {
+    const pm10Value = testPm10 ?? dustData?.PM10
+    const dustLevel = getDustLevel(pm10Value)
+    const profile = userProfile?.profile
+
+    const objectNames: Record<string, string> = {
+      window: '창문',
+      dog: '반려견',
+      plants: '식물',
+      sofa: '가구',
+      light: '조명',
+      stove: '가스레인지',
+      sink: '세면대',
+      fan: '공기청정기',
+      door: '출입문',
+      refrigeator: '냉장고',
+      clean: '청소'
+    }
+
+    const guideKeys = Object.keys(behavioralGuidelines.guides) as Array<keyof typeof behavioralGuidelines.guides>
+    const allGuides: Array<{
+      title: string
+      content: string[]
+      profileApplied: string[]
+      priority: number
+    }> = []
+
+    guideKeys.forEach((key) => {
+      const guide = behavioralGuidelines.guides[key]
+      let content = [...guide.baseMessages[dustLevel]]
+      const profileApplied: string[] = []
+      let priority = 0
+
+      // 조건부 메시지 추가 및 우선순위 계산
+      if ('conditionalMessages' in guide && guide.conditionalMessages) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const conditionalMsgs = guide.conditionalMessages as any
+
+        // 건강 상태 확인
+        if (profile?.health && conditionalMsgs[`health_${profile.health}`]) {
+          const healthMsg = conditionalMsgs[`health_${profile.health}`]
+          if (healthMsg[dustLevel]) {
+            content = [...content, ...healthMsg[dustLevel]]
+            profileApplied.push('건강 상태')
+            priority += 10
+          }
+        }
+
+        // 반려견 확인
+        if (profile?.pet === 'dog' && conditionalMsgs.pet_dog) {
+          const petMsg = conditionalMsgs.pet_dog
+          if (petMsg[dustLevel]) {
+            content = [...content, ...petMsg[dustLevel]]
+            profileApplied.push('반려동물')
+            priority += 10
+          }
+        }
+
+        // 연령대 확인
+        if (profile?.ageGroup) {
+          const ageKey = profile.ageGroup === 'senior' ? 'age_elderly' : `age_${profile.ageGroup}`
+          if (conditionalMsgs[ageKey]) {
+            const ageMsg = conditionalMsgs[ageKey]
+            if (ageMsg[dustLevel]) {
+              content = [...content, ...ageMsg[dustLevel]]
+              profileApplied.push('연령대')
+              priority += 7
+            }
+          }
+        }
+
+        // 아이 확인
+        if (profile?.child && profile.child !== 'none' && conditionalMsgs.child) {
+          const childMsg = conditionalMsgs.child
+          if (childMsg[dustLevel]) {
+            content = [...content, ...childMsg[dustLevel]]
+            profileApplied.push('아이')
+            priority += 6
+          }
+        }
+      }
+
+      // 프로필 기반 추가 우선순위 계산
+      if (profile) {
+        // 건강 상태 기반 우선순위
+        if (profile.health === 'asthma' && key === 'fan') {
+          priority += 5
+        }
+        if (profile.health === 'allergy_rhinitis' && (key === 'sink' || key === 'clean')) {
+          priority += 3
+        }
+        if (profile.health === 'lung_disease' && key === 'door') {
+          priority += 4
+        }
+
+        // 연령대 기반 우선순위
+        if (profile.ageGroup === 'senior' && key === 'refrigeator') {
+          priority += 2
+        }
+        if (profile.ageGroup === 'child' && key === 'door') {
+          priority += 3
+        }
+
+        // 아이 기반 우선순위
+        if (profile.child && profile.child !== 'none' && key === 'sofa') {
+          priority += 2
+        }
+
+        // 반려동물 기반 우선순위
+        if (profile.pet === 'dog' && key === 'dog') {
+          priority += 5
+        }
+        if (profile.pet === 'dog' && key === 'clean') {
+          priority += 3
+        }
+      }
+
+      // 외출 관련은 기본적으로 약간의 우선순위 (출근/외출 전 확인 목적)
+      if (key === 'door') {
+        priority += 1
+      }
+
+      allGuides.push({
+        title: objectNames[key] || key,
+        content,
+        profileApplied,
+        priority
+      })
+    })
+
+    // 우선순위가 높은 순으로 정렬 (프로필 관련된 것이 상단에)
+    allGuides.sort((a, b) => {
+      // 프로필이 적용된 것이 우선
+      if (a.profileApplied.length > 0 && b.profileApplied.length === 0) return -1
+      if (a.profileApplied.length === 0 && b.profileApplied.length > 0) return 1
+      // 같은 경우 우선순위로 정렬
+      return b.priority - a.priority
+    })
+
+    return allGuides
+  }
+
+  // 행동 방안 바로보기 버튼 클릭 핸들러
+  const handleShowBehavioralGuide = () => {
+    const guides = getAllBehavioralGuides()
+    setBehavioralModalGuides(guides)
+    setShowBehavioralModal(true)
+  }
+
 
   return (
     <>
@@ -493,20 +662,49 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                     userPet={userProfile?.profile?.pet}
                   />
                   
-                  {/* 미세먼지 표정 오버레이 */}
-                  {dustMood && (
-                    <div 
-                      className="dust-mood-overlay"
-                      style={{
-                        backgroundColor: dustMood.bgColor,
-                        color: dustMood.color,
-                        borderColor: dustMood.color
-                      }}
-                    >
-                      <div className="mood-emoji">{dustMood.emoji}</div>
-                      <div className="mood-text">{dustMood.text}</div>
-                    </div>
-                  )}
+                  {/* 미세먼지 표정 오버레이 및 행동 방안 버튼 컨테이너 */}
+                  <div className="mood-and-button-container">
+                    {dustMood && (
+                      <div 
+                        ref={(el) => {
+                          if (el && userProfile?.profile) {
+                            const width = el.offsetWidth
+                            if (width !== buttonWidth) {
+                              setButtonWidth(width)
+                            }
+                          }
+                        }}
+                        className="dust-mood-overlay"
+                        style={{
+                          backgroundColor: dustMood.bgColor,
+                          color: dustMood.color,
+                          borderColor: dustMood.color
+                        }}
+                      >
+                        <div className="mood-emoji">{dustMood.emoji}</div>
+                        <div className="mood-text">{dustMood.text}</div>
+                      </div>
+                    )}
+
+                    {/* 행동 방안 바로보기 버튼 - 프로필이 설정된 경우에만 표시 */}
+                    {userProfile?.profile && (
+                      <button 
+                        className="quick-behavioral-button"
+                        onClick={handleShowBehavioralGuide}
+                        title="프로필에 맞는 행동 방안 바로보기"
+                        style={{
+                          ...(buttonWidth ? { width: `${buttonWidth}px` } : {}),
+                          ...(dustMood ? {
+                            backgroundColor: dustMood.bgColor,
+                            color: dustMood.color,
+                            borderColor: dustMood.color
+                          } : {})
+                        }}
+                      >
+                        <span>행동 방안 바로보기</span>
+                      </button>
+                    )}
+                  </div>
 
                   {/* 모바일 프로필 정보 오버레이 */}
                   {!isLaptop && (
@@ -615,6 +813,170 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
             )}
           </div>
         </div>
+
+      {/* 모바일 미세먼지 등급 조정 플로팅 버튼 */}
+      {!isLaptop && (
+        <>
+          {/* 플로팅 버튼 토글 */}
+          <button
+            className="mobile-dust-control-toggle"
+            onClick={() => setShowMobileDustControls(!showMobileDustControls)}
+            title="미세먼지 등급 조정"
+          >
+            {showMobileDustControls ? (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                <path d="m296-80-56-56 240-240 240 240-56 56-184-184L296-80Zm184-504L240-824l56-56 184 184 184-184 56 56-240 240Z"/>
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                <path d="M480-80 240-320l57-57 183 183 183-183 57 57L480-80ZM298-584l-58-56 240-240 240 240-58 56-182-182-182 182Z"/>
+              </svg>
+            )}
+          </button>
+
+          {/* 플로팅 컨트롤 패널 */}
+          {showMobileDustControls && (
+            <div className="mobile-dust-control-panel">
+              <div className="mobile-dust-control-header">
+                <span>미세먼지 등급 조정</span>
+                <button 
+                  className="mobile-dust-control-close"
+                  onClick={() => setShowMobileDustControls(false)}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div className="mobile-dust-control-buttons">
+                <button 
+                  onClick={() => setTestPm10(20)} 
+                  className={`mobile-dust-button ${testPm10 === 20 ? 'active' : ''}`}
+                  style={{ background: '#10b981' }}
+                  title="좋음 (0-30)"
+                >
+                  좋음
+                </button>
+                <button 
+                  onClick={() => setTestPm10(60)} 
+                  className={`mobile-dust-button ${testPm10 === 60 ? 'active' : ''}`}
+                  style={{ background: '#22b14c' }}
+                  title="보통 (31-80)"
+                >
+                  보통
+                </button>
+                <button 
+                  onClick={() => setTestPm10(110)} 
+                  className={`mobile-dust-button ${testPm10 === 110 ? 'active' : ''}`}
+                  style={{ background: '#ffd400' }}
+                  title="나쁨 (81-150)"
+                >
+                  나쁨
+                </button>
+                <button 
+                  onClick={() => setTestPm10(200)} 
+                  className={`mobile-dust-button ${testPm10 === 200 ? 'active' : ''}`}
+                  style={{ background: '#f52020' }}
+                  title="매우 나쁨 (151+)"
+                >
+                  매우 나쁨
+                </button>
+                <button 
+                  onClick={() => setTestPm10(null)} 
+                  className={`mobile-dust-button ${testPm10 === null ? 'active' : ''}`}
+                  style={{ background: '#64748b' }}
+                  title="실제 데이터 사용"
+                >
+                  실제값
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* 행동 방안 모달 */}
+      {showBehavioralModal && (
+        <div className="behavioral-modal-overlay" onClick={() => setShowBehavioralModal(false)}>
+          <div className="behavioral-modal-content behavioral-modal-content-all" onClick={(e) => e.stopPropagation()}>
+            <div className="behavioral-modal-header">
+              <div>
+                <h2 className="behavioral-modal-title">전체 행동 방안</h2>
+                <p className="behavioral-modal-subtitle">프로필에 맞는 행동 방안이 상단에 표시됩니다</p>
+              </div>
+              <button className="behavioral-modal-close" onClick={() => setShowBehavioralModal(false)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div className="behavioral-modal-body behavioral-modal-body-all">
+              {behavioralModalGuides.map((guide, guideIndex) => (
+                <div key={guideIndex} className="behavioral-guide-section">
+                  <div className="behavioral-guide-header">
+                    <h3 className="behavioral-guide-title">{guide.title}</h3>
+                    {guide.profileApplied.length > 0 && (
+                      <div className="behavioral-modal-profile-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>프로필 반영: {guide.profileApplied.join(', ')}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="behavioral-guide-content">
+                    {guide.content.map((item, index) => {
+                      // 링크가 있는지 확인하고 파싱
+                      if (item.includes('구매 링크:')) {
+                        const parts = item.split('구매 링크:')
+                        const text = parts[0].trim()
+                        const url = parts[1]?.trim()
+                        const displayText = text.includes('마스크') ? '마스크 사러 가기' : 
+                                           text.includes('필터') ? '공기청정기 필터 사러 가기' :
+                                           text.includes('코 세척') ? '코 세척 식염수 사러 가기' :
+                                           text.includes('진공') ? 'HEPA 진공청소기 사러 가기' :
+                                           text.includes('식물') ? '반려식물 사러 가기' : '구매 링크'
+                        
+                        return (
+                          <p key={index} className="behavioral-modal-text">
+                            {text && <span>{text}</span>}
+                            {url && (
+                              <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                                {displayText}
+                              </a>
+                            )}
+                          </p>
+                        )
+                      }
+                      
+                      // 정보 링크 처리 (질병관리청, 대한천식알레르기학회 등)
+                      if (item.includes(' 정보:') || item.startsWith('질병관리청') || item.startsWith('대한천식')) {
+                        const parts = item.split(' 정보:')
+                        const url = parts[1]?.trim()
+                        const displayText = item.includes('질병관리청') ? '질병관리청 바로가기' :
+                                           item.includes('대한천식') ? '대한천식알레르기학회 바로가기' : '바로가기'
+                        
+                        return (
+                          <p key={index} className="behavioral-modal-text">
+                            {url && (
+                              <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                                {displayText}
+                              </a>
+                            )}
+                          </p>
+                        )
+                      }
+                      
+                      return <p key={index} className="behavioral-modal-text">{item}</p>
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
