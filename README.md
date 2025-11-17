@@ -2,7 +2,9 @@
 
 미세먼지로부터 건강을 지키기 위한 실용적인 행동 방안을 제공하는 웹 애플리케이션입니다.
 
-## 방문하기: https://fine-dust-project.vercel.app
+## 🌐 방문하기
+
+**배포 URL**: https://fine-dust-project.vercel.app
 
 ## 📋 서비스 소개
 
@@ -14,6 +16,7 @@ FineDustProject는 미세먼지로부터 건강을 지키기 위한 **실용적�
 - **개인화된 정보 제공**: 사용자의 건강 상태, 연령대, 자녀 유무, 반려동물 보유 여부 등 프로필 정보를 기반으로 맞춤형 행동 가이드를 제공합니다.
 - **대기질 모니터링**: 현재 위치 기반의 미세먼지(PM10, PM2.5) 농도를 제공하며, 상황에 맞는 대응 방안을 제시합니다.
 - **직접 행동으로 이어지는 기능**: 행동 방안 모달에서 필요한 제품 구매 링크, 관련 정보 사이트(질병관리청, 대한천식알레르기학회 등)로 직접 이동할 수 있어 실용성을 높였습니다.
+- **PWA 및 알림 기능**: Service Worker를 활용한 백그라운드 알림으로 사용자에게 지속적인 건강 관리를 유도합니다.
 
 ### 🎯 주요 기능
 
@@ -26,22 +29,33 @@ FineDustProject는 미세먼지로부터 건강을 지키기 위한 **실용적�
 - **프로필 기반 개인화**: 건강 상태, 연령대, 자녀, 반려동물 정보를 반영한 맞춤형 조언
 - **미세먼지 데이터**: 위치 기반 PM10, PM2.5 농도 및 등급 표시
 - **반응형 디자인**: 데스크톱, 태블릿, 모바일 모든 기기에서 최적화된 사용자 경험
-- **알림**: 사용자가 서비스에 접속할 수 있도록 알림을 통한 유도
+- **Service Worker 알림**: 브라우저를 닫은 후에도 백그라운드에서 알림을 통해 사용자에게 미션을 상기시킴
+- **프로필 관리**: 사용자 정보를 localStorage에 저장하여 지속적인 개인화 서비스 제공
 
 ## 🛠️ 기술 스택
 
 ### 주요 구현 언어 및 프레임워크
 
 - **TypeScript** - 타입 안전성을 통한 안정적인 개발 및 런타임 에러 방지
-- **React 18** - 컴포넌트 기반 사용자 인터페이스 구축
+- **React 19** - 컴포넌트 기반 사용자 인터페이스 구축
 - **Vite** - 빠른 개발 서버 및 최적화된 빌드 도구
 - **CSS3** - 반응형 레이아웃 및 모던 UI 스타일링
 
 ### Frontend 라이브러리 및 도구
 
 - **Spline (@splinetool/react-spline)** - 3D 인터랙티브 하우스 구현
+- **Three.js** - 3D 그래픽스 라이브러리
+- **@react-three/fiber** - React용 Three.js 렌더러
+- **@react-three/drei** - Three.js 유틸리티 헬퍼
 - **react-responsive** - 반응형 디자인을 위한 미디어 쿼리 훅
+- **xlsx** - Excel 파일 처리 (대기질 데이터 import)
 - **Feature-Sliced Design (FSD)** - 확장 가능한 아키텍처 패턴
+
+### API 및 데이터 소스
+
+- **한국환경공단 대기질 공공데이터 API** - 실시간 미세먼지 데이터 조회
+- **에어코리아 제공 미세먼지 데이터 xlsx 파일** - API 서버 불안정할 경우 대체용
+- **Kakao Maps API** - 위치 기반 주소 변환
 
 ### 3D 인터랙티브 하우스 - Spline 소개
 
@@ -81,16 +95,45 @@ const value = splineApp.getVariable('nowObject')
 이 프로젝트는 **Feature-Sliced Design (FSD)** 아키텍처를 따릅니다:
 
 ```
-src/
-├── app/           # 애플리케이션 설정 및 프로바이더
-├── pages/         # 페이지 컴포넌트들
-├── widgets/       # 독립적인 UI 블록들
-├── features/      # 비즈니스 기능들
-├── entities/      # 비즈니스 엔티티들
-└── shared/        # 공통 요소들
-    ├── styles/    # 전역 스타일
-    ├── lib/       # 유틸리티 함수들
-    └── ui/        # 재사용 가능한 UI 컴포넌트들
+FineDustProject/
+├── public/
+│   ├── data/              # 대기질 데이터 파일들
+│   │   ├── air-quality.json
+│   │   ├── stations_with_coords.json
+│   │   └── *.xlsx         # Excel 데이터 파일
+│   └── sw.js              # Service Worker 스크립트
+├── scripts/
+│   ├── fetchAirQuality.mjs      # 대기질 데이터 가져오기
+│   └── importAirQualityFromXlsx.mjs  # Excel 데이터 import
+├── src/
+│   ├── app/               # 애플리케이션 설정 및 프로바이더
+│   ├── pages/             # 페이지 컴포넌트들
+│   │   ├── Dashboard.tsx  # 메인 대시보드
+│   │   └── Profile.tsx    # 프로필 설정 페이지
+│   ├── widgets/           # 독립적인 UI 블록들
+│   │   ├── House3D/       # 3D 하우스 컴포넌트
+│   │   ├── DustInfo/      # 미세먼지 정보 위젯
+│   │   └── ProfileInfo/   # 프로필 정보 위젯
+│   ├── features/          # 비즈니스 기능들
+│   ├── entities/          # 비즈니스 엔티티들
+│   ├── shared/            # 공통 요소들
+│   │   ├── api/           # API 호출 함수들
+│   │   │   └── dustApi.ts # 대기질 API 관련 함수
+│   │   ├── styles/        # 전역 스타일
+│   │   ├── types/         # TypeScript 타입 정의
+│   │   ├── ui/            # 재사용 가능한 UI 컴포넌트들
+│   │   │   └── Toast.tsx  # 토스트 알림 컴포넌트
+│   │   └── utils/         # 유틸리티 함수들
+│   │       └── notifications.ts  # 알림 관련 유틸리티
+│   └── assets/
+│       └── data/          # 정적 데이터 파일들
+│           ├── behavioral_guidelines.json
+│           ├── profileCategories.json
+│           └── todoList.json
+├── package.json
+├── vite.config.ts         # Vite 설정 (경로 별칭 포함)
+├── vercel.json            # Vercel 배포 설정
+└── README.md
 ```
 
 ### FSD 아키텍처의 장점
@@ -116,11 +159,14 @@ GitHub 저장소와 Vercel을 연결하면 자동 배포가 설정됩니다:
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
    - **Install Command**: `npm install`
-5. "Deploy" 클릭
+5. 환경 변수 설정:
+   - `SERVICE_KEY`: 공공데이터포털 API 키
+6. "Deploy" 클릭
 
 ## 🔧 개발 가이드
 
 ### 경로 별칭
+
 프로젝트에서는 `@` 별칭을 사용하여 깔끔한 import 경로를 제공합니다:
 
 ```typescript
@@ -131,12 +177,49 @@ import { Button } from '../../../shared/ui/Button'
 import { Button } from '@/shared/ui/Button'
 ```
 
+경로 별칭은 `vite.config.ts`에서 설정되어 있습니다.
+
+### Service Worker 및 알림 기능
+
+이 프로젝트는 Service Worker를 활용하여 백그라운드 알림을 제공합니다:
+
+- **Service Worker 등록**: `src/shared/utils/notifications.ts`에서 처리
+- **알림 스케줄링**: 브라우저를 닫은 후 10초 뒤 알림 표시
+- **Service Worker 파일**: `public/sw.js`
+
+알림 기능을 사용하려면 브라우저에서 알림 권한을 허용해야 합니다.
+
 ## 📊 데이터 소스
 
+### 대기질 데이터
+
+- **한국환경공단 대기질 공공데이터**
+  - 실시간 미세먼지(PM10, PM2.5) 농도 데이터
+  - 측정소별 데이터 조회
+  - 스크립트를 통해 주기적으로 데이터 업데이트 가능
+
 ### 건강 정보 소스 (행동 방안 작성시 참고)
+
 - **질병관리청**: 호흡기 질환 예방 행동 지침 및 공식 정보 링크 제공
 - **대한천식알레르기학회**: 천식 및 알레르기 환자를 위한 전문 가이드라인 링크 제공
 - **각종 논문 탐색**: 미세먼지 취약 계층, 카테고리별 관련 논문 탐색
+
+## 🔔 알림 기능
+
+### Service Worker 기반 백그라운드 알림
+
+이 프로젝트는 Service Worker를 활용하여 브라우저를 닫은 후에도 알림을 표시할 수 있습니다:
+
+1. **알림 권한 요청**: 사용자가 처음 접속할 때 알림 권한을 요청합니다.
+2. **Service Worker 등록**: 백그라운드에서 알림을 처리하기 위해 Service Worker를 등록합니다.
+3. **알림 스케줄링**: 사용자가 브라우저를 닫을 때 미션 정보를 Service Worker에 전달하고, 10초 후 알림을 표시합니다.
+
+### 알림 동작 방식
+
+- 사용자가 3D 하우스에서 객체를 클릭하여 미션을 선택
+- 브라우저를 닫을 때 `beforeunload` 이벤트로 미션 정보를 Service Worker에 전달
+- Service Worker가 10초 후 백그라운드에서 알림 표시
+- 알림 클릭 시 서비스로 다시 접속 유도
 
 ---
 
