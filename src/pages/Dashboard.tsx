@@ -574,7 +574,12 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
 
     <div className={`smart-home-dashboard ${!isLaptop ? 'mobile-layout' : ''}`}>
       {/* 상단 헤더 */}
-      <header className="dashboard-header">
+      <header 
+        className="dashboard-header"
+        style={dustMood ? {
+          backgroundColor: dustMood.bgColor
+        } : {}}
+      >
         <div className="header-left">
           <div className="brand-logo">
             <span>Finedust</span>
@@ -899,7 +904,13 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
       {showBehavioralModal && (
         <div className="behavioral-modal-overlay" onClick={() => setShowBehavioralModal(false)}>
           <div className="behavioral-modal-content behavioral-modal-content-all" onClick={(e) => e.stopPropagation()}>
-            <div className="behavioral-modal-header">
+            <div 
+              className="behavioral-modal-header"
+              style={dustMood ? {
+                backgroundColor: dustMood.bgColor,
+                borderBottomColor: dustMood.color
+              } : {}}
+            >
               <div>
                 <h2 className="behavioral-modal-title">전체 행동 방안</h2>
                 <p className="behavioral-modal-subtitle">프로필에 맞는 행동 방안이 상단에 표시됩니다</p>
@@ -912,9 +923,24 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
             </div>
             <div className="behavioral-modal-body behavioral-modal-body-all">
               {behavioralModalGuides.map((guide, guideIndex) => (
-                <div key={guideIndex} className="behavioral-guide-section">
+                <div 
+                  key={guideIndex} 
+                  className="behavioral-guide-section"
+                  style={guide.profileApplied.length > 0 && dustMood ? {
+                    background: `linear-gradient(135deg, ${dustMood.bgColor} 0%, #f8fafc 100%)`,
+                    borderColor: dustMood.color,
+                    borderWidth: '2px'
+                  } : {}}
+                >
                   <div className="behavioral-guide-header">
-                    <h3 className="behavioral-guide-title">{guide.title}</h3>
+                    <h3 
+                      className="behavioral-guide-title"
+                      style={guide.profileApplied.length > 0 && dustMood ? {
+                        color: dustMood.color
+                      } : {}}
+                    >
+                      {guide.title}
+                    </h3>
                     {guide.profileApplied.length > 0 && (
                       <div className="behavioral-modal-profile-badge">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -939,10 +965,20 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                                            text.includes('식물') ? '반려식물 사러 가기' : '구매 링크'
                         
                         return (
-                          <p key={index} className="behavioral-modal-text">
+                          <p 
+                            key={index} 
+                            className="behavioral-modal-text"
+                            style={dustMood ? { borderLeftColor: dustMood.color } : {}}
+                          >
                             {text && <span>{text}</span>}
                             {url && (
-                              <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                              <a 
+                                href={url} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="behavioral-modal-link"
+                                style={dustMood ? { color: dustMood.color } : {}}
+                              >
                                 {displayText}
                               </a>
                             )}
@@ -958,9 +994,19 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                                            item.includes('대한천식') ? '대한천식알레르기학회 바로가기' : '바로가기'
                         
                         return (
-                          <p key={index} className="behavioral-modal-text">
+                          <p 
+                            key={index} 
+                            className="behavioral-modal-text"
+                            style={dustMood ? { borderLeftColor: dustMood.color } : {}}
+                          >
                             {url && (
-                              <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                              <a 
+                                href={url} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="behavioral-modal-link"
+                                style={dustMood ? { color: dustMood.color } : {}}
+                              >
                                 {displayText}
                               </a>
                             )}
@@ -968,7 +1014,15 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                         )
                       }
                       
-                      return <p key={index} className="behavioral-modal-text">{item}</p>
+                      return (
+                        <p 
+                          key={index} 
+                          className="behavioral-modal-text"
+                          style={dustMood ? { borderLeftColor: dustMood.color } : {}}
+                        >
+                          {item}
+                        </p>
+                      )
                     })}
                   </div>
                 </div>

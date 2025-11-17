@@ -958,6 +958,12 @@
 .behavioral-modal-content-all {
   max-width: 700px;
   max-height: 85vh;
+  overflow: hidden;
+}
+
+.behavioral-modal-content-all .behavioral-modal-header {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 .behavioral-modal-subtitle {
@@ -1017,16 +1023,7 @@
   border-left: 3px solid #10b981;
 }
 
-/* 프로필 반영된 섹션 강조 */
-.behavioral-guide-section:has(.behavioral-modal-profile-badge) {
-  background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);
-  border-color: #86efac;
-  border-width: 2px;
-}
-
-.behavioral-guide-section:has(.behavioral-modal-profile-badge) .behavioral-guide-title {
-  color: #059669;
-}
+/* 프로필 반영된 섹션 강조 - 동적 스타일로 인라인에서 처리 */
 
 /* 모바일 대응 */
 @media (max-width: 768px) {

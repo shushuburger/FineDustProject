@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import type { Application } from '@splinetool/runtime'
 import behavioralGuidelines from '@/assets/data/behavioral_guidelines.json'
+import { getPM10Grade } from '@/shared/api/dustApi'
+import type { DustGrade } from '@/shared/types/api'
 import './House3D.css'
 
 interface House3DProps {
@@ -33,6 +35,38 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
     if (pm10 <= 80) return 'moderate'
     if (pm10 <= 150) return 'bad'
     return 'very_bad'
+  }
+
+  // 미세먼지 등급에 따른 색상 가져오기
+  const getDustColor = (pm10?: number): string => {
+    if (!pm10) return '#10b981'
+    const grade = getPM10Grade(pm10)
+    const colorMap: Record<DustGrade, string> = {
+      '매우 좋음': '#4285F4',
+      '좋음': '#1976D2',
+      '양호': '#22B14C',
+      '보통': '#B5E61D',
+      '주의': '#FFD400',
+      '나쁨': '#FF7F27',
+      '매우 나쁨': '#F52020'
+    }
+    return colorMap[grade] || '#10b981'
+  }
+
+  // 미세먼지 등급에 따른 배경색 가져오기
+  const getDustBgColor = (pm10?: number): string => {
+    if (!pm10) return '#E3F2FD'
+    const grade = getPM10Grade(pm10)
+    const bgColorMap: Record<DustGrade, string> = {
+      '매우 좋음': '#D0E8F2',
+      '좋음': '#E3F2FD',
+      '양호': '#F1F8E9',
+      '보통': '#FFF8E1',
+      '주의': '#FFF3E0',
+      '나쁨': '#FFEBEE',
+      '매우 나쁨': '#FCE4EC'
+    }
+    return bgColorMap[grade] || '#E3F2FD'
   }
 
   // 스플라인 로드 후 초기값 설정 및 모달 활성화
@@ -218,7 +252,13 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
           setNowSelectedObject('none')
         }}>
           <div className="behavioral-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="behavioral-modal-header">
+            <div 
+              className="behavioral-modal-header"
+              style={{
+                backgroundColor: getDustBgColor(pm10Value),
+                borderBottomColor: getDustColor(pm10Value)
+              }}
+            >
               <div>
                 <h2 className="behavioral-modal-title">{modalTitle}</h2>
                 {modalProfileApplied.length > 0 && (
@@ -255,10 +295,20 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                                      text.includes('식물') ? '반려식물 사러 가기' : '구매 링크'
                   
                   return (
-                    <p key={index} className="behavioral-modal-text">
+                    <p 
+                      key={index} 
+                      className="behavioral-modal-text"
+                      style={{ borderLeftColor: getDustColor(pm10Value) }}
+                    >
                       {text && <span>{text}</span>}
                       {url && (
-                        <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                        <a 
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="behavioral-modal-link"
+                          style={{ color: getDustColor(pm10Value) }}
+                        >
                           {displayText}
                         </a>
                       )}
@@ -274,9 +324,19 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                                      item.includes('대한천식') ? '대한천식알레르기학회 바로가기' : '바로가기'
                   
                   return (
-                    <p key={index} className="behavioral-modal-text">
+                    <p 
+                      key={index} 
+                      className="behavioral-modal-text"
+                      style={{ borderLeftColor: getDustColor(pm10Value) }}
+                    >
                       {url && (
-                        <a href={url} target="_blank" rel="noopener noreferrer" className="behavioral-modal-link">
+                        <a 
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="behavioral-modal-link"
+                          style={{ color: getDustColor(pm10Value) }}
+                        >
                           {displayText}
                         </a>
                       )}
@@ -284,7 +344,15 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
                   )
                 }
                 
-                return <p key={index} className="behavioral-modal-text">{item}</p>
+                return (
+                  <p 
+                    key={index} 
+                    className="behavioral-modal-text"
+                    style={{ borderLeftColor: getDustColor(pm10Value) }}
+                  >
+                    {item}
+                  </p>
+                )
               })}
             </div>
           </div>
