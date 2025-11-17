@@ -5,7 +5,10 @@
 ## 🌐 방문하기
 
 **배포 URL**: https://fine-dust-project.vercel.app
-**배포 QR**: <img width="100" height="100" alt="qr사진" src="https://github.com/user-attachments/assets/5e9d8b65-0428-4129-8175-a2e1c8a817ff" />
+
+**배포 QR**: 
+
+<img width="200" height="200" alt="qr사진" src="https://github.com/user-attachments/assets/5e9d8b65-0428-4129-8175-a2e1c8a817ff" />
 
 ## 📋 서비스 소개
 
