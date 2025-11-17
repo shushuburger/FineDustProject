@@ -48,6 +48,7 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
     priority: number
   }>>([])
   const [buttonWidth, setButtonWidth] = useState<number | undefined>(undefined)
+  const [showMobileDustControls, setShowMobileDustControls] = useState(false)
 
   // 프로필 기반 미션 우선순위 계산
   const getMissionPriority = (mission: TodoRealLifeAction, profile?: UserProfile): number => {
@@ -812,6 +813,87 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
             )}
           </div>
         </div>
+
+      {/* 모바일 미세먼지 등급 조정 플로팅 버튼 */}
+      {!isLaptop && (
+        <>
+          {/* 플로팅 버튼 토글 */}
+          <button
+            className="mobile-dust-control-toggle"
+            onClick={() => setShowMobileDustControls(!showMobileDustControls)}
+            title="미세먼지 등급 조정"
+          >
+            {showMobileDustControls ? (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                <path d="m296-80-56-56 240-240 240 240-56 56-184-184L296-80Zm184-504L240-824l56-56 184 184 184-184 56 56-240 240Z"/>
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                <path d="M480-80 240-320l57-57 183 183 183-183 57 57L480-80ZM298-584l-58-56 240-240 240 240-58 56-182-182-182 182Z"/>
+              </svg>
+            )}
+          </button>
+
+          {/* 플로팅 컨트롤 패널 */}
+          {showMobileDustControls && (
+            <div className="mobile-dust-control-panel">
+              <div className="mobile-dust-control-header">
+                <span>미세먼지 등급 조정</span>
+                <button 
+                  className="mobile-dust-control-close"
+                  onClick={() => setShowMobileDustControls(false)}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div className="mobile-dust-control-buttons">
+                <button 
+                  onClick={() => setTestPm10(20)} 
+                  className={`mobile-dust-button ${testPm10 === 20 ? 'active' : ''}`}
+                  style={{ background: '#10b981' }}
+                  title="좋음 (0-30)"
+                >
+                  좋음
+                </button>
+                <button 
+                  onClick={() => setTestPm10(60)} 
+                  className={`mobile-dust-button ${testPm10 === 60 ? 'active' : ''}`}
+                  style={{ background: '#22b14c' }}
+                  title="보통 (31-80)"
+                >
+                  보통
+                </button>
+                <button 
+                  onClick={() => setTestPm10(110)} 
+                  className={`mobile-dust-button ${testPm10 === 110 ? 'active' : ''}`}
+                  style={{ background: '#ffd400' }}
+                  title="나쁨 (81-150)"
+                >
+                  나쁨
+                </button>
+                <button 
+                  onClick={() => setTestPm10(200)} 
+                  className={`mobile-dust-button ${testPm10 === 200 ? 'active' : ''}`}
+                  style={{ background: '#f52020' }}
+                  title="매우 나쁨 (151+)"
+                >
+                  매우 나쁨
+                </button>
+                <button 
+                  onClick={() => setTestPm10(null)} 
+                  className={`mobile-dust-button ${testPm10 === null ? 'active' : ''}`}
+                  style={{ background: '#64748b' }}
+                  title="실제 데이터 사용"
+                >
+                  실제값
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
       {/* 행동 방안 모달 */}
       {showBehavioralModal && (
