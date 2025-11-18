@@ -985,12 +985,6 @@
   border-radius: 12px;
   padding: 20px;
   border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
-}
-
-.behavioral-guide-section:hover {
-  border-color: #10b981;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
 }
 
 .behavioral-guide-header {
