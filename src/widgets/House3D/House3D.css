@@ -301,17 +301,66 @@
   border-left: 3px solid #10b981;
 }
 
+.behavioral-modal-action {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
 .behavioral-modal-link {
   color: #10b981;
   text-decoration: none;
   font-weight: 600;
   margin-left: 8px;
   transition: color 0.2s;
+  display: inline-block;
+  margin-top: 4px;
 }
 
 .behavioral-modal-link:hover {
   color: #059669;
   text-decoration: underline;
+}
+
+/* 설명문 스타일 */
+.behavioral-modal-explanation-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.behavioral-modal-explanation-text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #475569;
+  margin: 0;
+  margin-top: 4px;
+}
+
+/* 설명문 타입별 색상 (라벨만) */
+.behavioral-modal-explanation-label-purpose {
+  color: #2563eb;
+}
+
+.behavioral-modal-explanation-label-evidence {
+  color: #16a34a;
+}
+
+.behavioral-modal-explanation-label-mechanism {
+  color: #d97706;
+}
+
+.behavioral-modal-explanation-label-warning {
+  color: #dc2626;
+}
+
+.behavioral-modal-explanation-label-condition {
+  color: #9333ea;
+}
+
+.behavioral-modal-explanation-label-explicit_reason {
+  color: #059669;
 }
 
 /* 모바일 대응 */
@@ -326,6 +375,14 @@
   
   .behavioral-modal-text {
     font-size: 0.875rem;
+  }
+  
+  .behavioral-modal-explanation-text {
+    font-size: 0.8125rem;
+  }
+  
+  .behavioral-modal-explanation-label {
+    font-size: 0.6875rem;
   }
 }
 
