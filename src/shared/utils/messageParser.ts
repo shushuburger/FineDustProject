@@ -4,12 +4,10 @@
  */
 
 export type ExplanationType = 
-  | 'purpose'      // 목적/이유
+  | 'purpose'      // 목적/효과
   | 'evidence'     // 근거/과학적 설명
   | 'mechanism'    // 작동 메커니즘
   | 'warning'       // 주의사항/위험
-  | 'condition'     // 조건별 특수 상황
-  | 'explicit_reason' // 명시적 이유 설명
 
 export interface ParsedMessage {
   action: string
@@ -25,12 +23,6 @@ export interface ParsedMessage {
  */
 function detectExplanationType(explanation: string): ExplanationType {
   const text = explanation
-  
-  // 명시적 이유 설명 (가장 우선순위 높음)
-  if (text.includes('왜 해야 하는가') || text.includes('왜 해야 하는지') || 
-      text.includes('왜 해야 하는가:')) {
-    return 'explicit_reason'
-  }
   
   // 근거/과학적 설명
   if (text.includes('근거') || text.includes('권장됨') || text.includes('초래할 수 있음') || 
@@ -53,14 +45,7 @@ function detectExplanationType(explanation: string): ExplanationType {
     return 'mechanism'
   }
   
-  // 조건별 특수 상황
-  if (text.includes('경우') || text.includes('때') || text.includes('~인 경우') ||
-      text.includes('~이 있는 경우') || text.includes('~이 있는 때') ||
-      text.includes('있는 경우') || text.includes('있는 때')) {
-    return 'condition'
-  }
-  
-  // 기본값: 목적/이유
+  // 기본값: 목적/효과 (모든 나머지, "왜 해야 하는가", "경우", "때" 등 포함)
   return 'purpose'
 }
 
@@ -140,12 +125,10 @@ export function parseMessage(message: string): ParsedMessage {
  */
 export function getExplanationTypeLabel(type: ExplanationType): string {
   const labels: Record<ExplanationType, string> = {
-    purpose: '목적/효과',
-    evidence: '근거',
-    mechanism: '원리',
-    warning: '주의',
-    condition: '조건',
-    explicit_reason: '이유'
+    purpose: '왜 해야 하나요? 하면 무엇이 좋나요?',
+    evidence: '왜 해야 하나요?',
+    mechanism: '왜 해야 하나요?',
+    warning: '반드시 지켜야 하는 이유!'
   }
   return labels[type]
 }
