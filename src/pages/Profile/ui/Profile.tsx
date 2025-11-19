@@ -9,32 +9,13 @@ import { ProfileCategoryCard } from '@/components/ProfileCategoryCard'
 import { ProfileCategoryModal } from '@/components/ProfileCategoryModal'
 import { ProfileCategoryList } from '@/components/ProfileCategoryList'
 import { SaveButton } from '@/components/SaveButton'
-import './Profile.css'
-
-interface ProfileProps {
-  onNavigateToDashboard?: () => void
-}
+import { loadSavedProfile } from '../model/utils'
+import type { ProfileProps } from '../model/types'
+import '../../Profile.css'
 
 export const Profile = ({ onNavigateToDashboard }: ProfileProps) => {
   const isMobile = useMediaQuery({ maxWidth: 768 })
   
-  // localStorage에서 저장된 데이터 불러오기
-  const loadSavedProfile = () => {
-    try {
-      const saved = localStorage.getItem('userProfile')
-      if (saved) {
-        const profile = JSON.parse(saved)
-        return {
-          userName: profile.userName || 'Shopia W.',
-          selectedOptions: profile.selectedOptions || {}
-        }
-      }
-    } catch (error) {
-      console.error('프로필 로드 실패:', error)
-    }
-    return { userName: 'Shopia W.', selectedOptions: {} }
-  }
-
   const { userName: initialUserName, selectedOptions: initialOptions } = loadSavedProfile()
   
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(initialOptions)
