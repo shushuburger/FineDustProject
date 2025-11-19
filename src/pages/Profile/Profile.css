@@ -1,5 +1,5 @@
 /* ============================================
-   데스크톱 레이아웃 스타일
+   ?�스?�톱 ?�이?�웃 ?��???
    ============================================ */
 
 .smart-home-profile {
@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 
-/* 프로필 페이지 헤더 */
+/* ?�로???�이지 ?�더 */
 .profile-page-header {
   display: flex;
   align-items: center;
@@ -63,7 +63,7 @@
   background: white;
 }
 
-/* 커버 이미지 */
+/* 커버 ?��?지 */
 .cover-image {
   width: 100%;
   height: 180px;
@@ -93,7 +93,7 @@
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* 프로필 헤더 */
+/* ?�로???�더 */
 .profile-header-section-simple {
   padding: 1rem 1.5rem;
   display: flex;
@@ -170,13 +170,13 @@
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-/* 메인 콘텐츠 */
+/* 메인 콘텐�?*/
 .profile-content-grid {
   padding: 1.5rem 2rem;
   min-height: 0;
 }
 
-/* 프로필 설정 섹션 */
+/* ?�로???�정 ?�션 */
 .profile-sidebar {
   display: flex;
   flex-direction: column;
@@ -261,7 +261,7 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* 저장 버튼 */
+/* ?�??버튼 */
 .save-section {
   padding: 1rem;
   border-top: 1px solid #e2e8f0;
@@ -286,7 +286,7 @@
 }
 
 /* ============================================
-   모바일 레이아웃 스타일
+   모바???�이?�웃 ?��???
    ============================================ */
 
 .profile-page-mobile {
@@ -416,7 +416,7 @@
   background: #059669;
 }
 
-/* 모바일 카테고리 아이템 */
+/* 모바??카테고리 ?�이??*/
 .category-item-mobile {
   background: white;
   border-radius: 12px;
@@ -459,7 +459,7 @@
   font-weight: 500;
 }
 
-/* 모달 스타일 */
+/* 모달 ?��???*/
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -616,7 +616,7 @@
   transform: translateY(0);
 }
 
-/* 스크롤바 스타일링 */
+/* ?�크롤바 ?��??�링 */
 .profile-content-wrapper::-webkit-scrollbar,
 .profile-page-mobile::-webkit-scrollbar {
   width: 8px;
@@ -638,7 +638,7 @@
   background: #94a3b8;
 }
 
-/* 반응형 조정 */
+/* 반응??조정 */
 @media (max-width: 1024px) {
   .profile-content-grid {
     grid-template-columns: 1fr;

@@ -12,7 +12,7 @@ export const QuickBehavioralButton = ({ dustMood, buttonWidth, onClick }: QuickB
         ...(buttonWidth ? { width: `${buttonWidth}px` } : {}),
         ...(dustMood ? {
           backgroundColor: dustMood.bgColor,
-          color: dustMood.color,
+          color: '#000000',
           borderColor: dustMood.color
         } : {})
       }}

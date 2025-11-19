@@ -14,7 +14,7 @@ import { useDashboardData, useUserProfile, useBehavioralGuides } from '../model/
 import { getDustMood, getMissionPriority, getRandomMissions, getTodayDateString } from '../model/utils'
 import type { DashboardProps, BehavioralGuide } from '../model/types'
 import todoListData from '@/shared/assets/data/todoList.json'
-import '../../Dashboard.css'
+import '../Dashboard.css'
 
 export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   const isLaptop = useMediaQuery({ minWidth: 1024 })

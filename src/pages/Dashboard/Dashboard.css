@@ -1,4 +1,4 @@
-/* 스마트 홈 대시보드 전체 레이아웃 */
+/* ?�마?????�?�보???�체 ?�이?�웃 */
 .smart-home-dashboard {
   width: 100vw;
   height: 100vh;
@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-/* 상단 헤더 */
+/* ?�단 ?�더 */
 .dashboard-header {
   display: flex;
   align-items: center;
@@ -104,7 +104,7 @@
   font-size: 12px;
 }
 
-/* 메인 콘텐츠 영역 */
+/* 메인 콘텐�??�역 */
 .dashboard-content {
   display: flex;
   flex: 1;
@@ -112,7 +112,7 @@
   height: calc(100vh - 64px);
 }
 
-/* 모바일 레이아웃 */
+/* 모바???�이?�웃 */
 .smart-home-dashboard.mobile-layout .dashboard-content {
   flex-direction: column;
 }
@@ -122,7 +122,7 @@
   width: 100%;
 }
 
-/* 중앙 메인 콘텐츠 */
+/* 중앙 메인 콘텐�?*/
 .main-content {
   flex: 1;
   display: flex;
@@ -132,7 +132,7 @@
   position: relative;
 }
 
-/* 미세먼지 표정 오버레이 및 버튼 컨테이너 */
+/* 미세먼�? ?�정 ?�버?�이 �?버튼 컨테?�너 */
 .mood-and-button-container {
   position: absolute;
   top: 20px;
@@ -144,7 +144,7 @@
   z-index: 30;
 }
 
-/* 미세먼지 표정 오버레이 */
+/* 미세먼�? ?�정 ?�버?�이 */
 .dust-mood-overlay {
   padding: 16px 20px;
   border-radius: 16px;
@@ -191,7 +191,7 @@
   }
 }
 
-/* 모바일에서 이모지 및 텍스트 크기 조정 */
+/* 모바?�에???�모지 �??�스???�기 조정 */
 @media (max-width: 1023px) {
   .mood-emoji {
     font-size: 36px;
@@ -202,7 +202,7 @@
   }
 }
 
-/* 행동 방안 바로보기 버튼 */
+/* ?�동 방안 바로보기 버튼 */
 .quick-behavioral-button {
   display: flex;
   align-items: center;
@@ -259,7 +259,7 @@
   }
 }
 
-/* 모바일에서 컨테이너 및 버튼 위치 조정 */
+/* 모바?�에??컨테?�너 �?버튼 ?�치 조정 */
 @media (max-width: 1023px) {
   .mood-and-button-container {
     top: 10px;
@@ -276,7 +276,7 @@
   }
 }
 
-/* 모바일 미세먼지 등급 조정 플로팅 버튼 */
+/* 모바??미세먼�? ?�급 조정 ?�로??버튼 */
 .mobile-dust-control-toggle {
   position: fixed;
   bottom: 20px;
@@ -393,7 +393,7 @@
   font-weight: 700;
 }
 
-/* 모바일 프로필 정보 오버레이 */
+/* 모바???�로???�보 ?�버?�이 */
 .profile-overlay-mobile {
   position: absolute;
   top: 10px;
@@ -414,7 +414,7 @@
   }
 }
 
-/* 모바일에서 ProfileInfo 스타일 조정 */
+/* 모바?�에??ProfileInfo ?��???조정 */
 @media (max-width: 1023px) {
   .profile-overlay-mobile .profile-info-card {
     background: rgba(255, 255, 255, 0.95);
@@ -496,7 +496,7 @@
   }
 }
 
-/* 오른쪽 사이드바 */
+/* ?�른�??�이?�바 */
 .right-sidebar {
   width: 300px;
   background: white;
@@ -517,7 +517,7 @@
   overflow: hidden;
 }
 
-/* 모바일에서 사이드바 오버레이 */
+/* 모바?�에???�이?�바 ?�버?�이 */
 .right-sidebar.mobile-overlay {
   position: fixed;
   top: 0;
@@ -569,7 +569,7 @@
   padding-right: 8px;
 }
 
-/* 위치 정보 섹션 */
+/* ?�치 ?�보 ?�션 */
 .location-info-section {
   background: #f8fafc;
   border-radius: 12px;
@@ -655,7 +655,7 @@
   transform: translateY(-50%) scale(1.05);
 }
 
-/* 활동 섹션 */
+/* ?�동 ?�션 */
 .activity-section {
   margin-bottom: 0;
 }
@@ -673,7 +673,7 @@
   margin-bottom: 16px;
 }
 
-/* 캘린더 */
+/* 캘린??*/
 .calendar {
   background: #f8fafc;
   border-radius: 8px;
@@ -720,7 +720,7 @@
   color: white;
 }
 
-/* 미션 체크리스트 */
+/* 미션 체크리스??*/
 .mission-checklist {
   display: flex;
   flex-direction: column;
@@ -797,7 +797,7 @@
   }
 }
 
-/* 인터랙티브 아이콘들 */
+/* ?�터?�티�??�이콘들 */
 .interactive-icons {
   position: absolute;
   top: 0;
@@ -834,7 +834,7 @@
   color: white;
 }
 
-/* 모바일 사이드바 배경 오버레이 */
+/* 모바???�이?�바 배경 ?�버?�이 */
 .mobile-sidebar-backdrop {
   position: fixed;
   top: 0;
@@ -861,7 +861,7 @@
   color: white;
 }
 
-/* 프로필 설정 모달 */
+/* ?�로???�정 모달 */
 .profile-modal-overlay {
   position: fixed;
   top: 0;
@@ -954,7 +954,7 @@
   background: #059669;
 }
 
-/* 전체 행동 방안 모달 스타일 */
+/* ?�체 ?�동 방안 모달 ?��???*/
 .behavioral-modal-content-all {
   max-width: 700px;
   max-height: 85vh;
@@ -1037,7 +1037,7 @@
   text-decoration: underline;
 }
 
-/* 설명문 스타일 */
+/* ?�명�??��???*/
 .behavioral-modal-explanation-label {
   font-size: 0.75rem;
   font-weight: 600;
@@ -1054,7 +1054,7 @@
   margin-top: 4px;
 }
 
-/* 설명문 타입별 색상 (라벨만) */
+/* ?�명�??�?�별 ?�상 (?�벨�? */
 .behavioral-modal-explanation-label-purpose {
   color: #2563eb;
 }
@@ -1071,9 +1071,9 @@
   color: #dc2626;
 }
 
-/* 프로필 반영된 섹션 강조 - 동적 스타일로 인라인에서 처리 */
+/* ?�로??반영???�션 강조 - ?�적 ?��??�로 ?�라?�에??처리 */
 
-/* 모바일 대응 */
+/* 모바???�??*/
 @media (max-width: 768px) {
   .behavioral-modal-content-all {
     max-width: 95%;

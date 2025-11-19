@@ -14,7 +14,7 @@ export const DustMoodOverlay = ({ dustMood, onWidthChange }: DustMoodOverlayProp
       className="dust-mood-overlay"
       style={{
         backgroundColor: dustMood.bgColor,
-        color: dustMood.color,
+        color: '#000000',
         borderColor: dustMood.color
       }}
     >

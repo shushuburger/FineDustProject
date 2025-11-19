@@ -11,7 +11,7 @@ import { ProfileCategoryList } from '@/components/ProfileCategoryList'
 import { SaveButton } from '@/components/SaveButton'
 import { loadSavedProfile } from '../model/utils'
 import type { ProfileProps } from '../model/types'
-import '../../Profile.css'
+import '../Profile.css'
 
 export const Profile = ({ onNavigateToDashboard }: ProfileProps) => {
   const isMobile = useMediaQuery({ maxWidth: 768 })
