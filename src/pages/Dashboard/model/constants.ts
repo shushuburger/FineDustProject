@@ -56,7 +56,7 @@ export const DEFAULT_DUST_MOOD: DustMood = {
 export const OBJECT_NAMES: Record<string, string> = {
   window: '창문',
   dog: '반려견',
-  plants: '식물',
+  plant: '식물',
   sofa: '가구',
   light: '조명',
   stove: '가스레인지',
