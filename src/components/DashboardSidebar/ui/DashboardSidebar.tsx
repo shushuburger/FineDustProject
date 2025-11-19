@@ -1,4 +1,4 @@
-import { DustInfo } from '@/widgets/DustInfo/DustInfo'
+import { DustInfo } from '@/widgets/DustInfo'
 import { ProfileInfo } from '@/widgets/ProfileInfo'
 import { Calendar } from '@/components/Calendar'
 import { MissionList } from '@/components/MissionList'

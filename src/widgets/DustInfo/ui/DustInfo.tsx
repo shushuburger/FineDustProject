@@ -1,30 +1,11 @@
-import { useState, useEffect } from 'react';
-import type { DustData, DustGrade } from '@/shared/types/api';
-import { getPM10Grade, getPM25Grade, getGradeColor } from '@/shared/api/dustApi';
-import './DustInfo.css';
-
-interface DustInfoProps {
-  dustData?: DustData | null;
-  location?: string | null;
-  time?: string;
-  isLoading?: boolean;
-  error?: string | null;
-}
+import { getGradeColor } from '@/shared/api/dustApi'
+import { useDustGrades } from '../model/hooks'
+import { DUST_LEGEND_ITEMS } from '../model/constants'
+import type { DustInfoProps } from '../model/types'
+import './DustInfo.css'
 
 export const DustInfo = ({ dustData, location, time, isLoading, error }: DustInfoProps) => {
-  const [pm10Grade, setPm10Grade] = useState<DustGrade>('보통');
-  const [pm25Grade, setPm25Grade] = useState<DustGrade>('보통');
-
-  useEffect(() => {
-    if (dustData) {
-      if (dustData.PM10 !== undefined) {
-        setPm10Grade(getPM10Grade(dustData.PM10));
-      }
-      if (dustData['PM2.5'] !== undefined) {
-        setPm25Grade(getPM25Grade(dustData['PM2.5']));
-      }
-    }
-  }, [dustData]);
+  const { pm10Grade, pm25Grade } = useDustGrades(dustData)
 
   if (isLoading) {
     return (
@@ -37,7 +18,7 @@ export const DustInfo = ({ dustData, location, time, isLoading, error }: DustInf
           <p>데이터를 불러오는 중...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -50,7 +31,7 @@ export const DustInfo = ({ dustData, location, time, isLoading, error }: DustInf
           <p>❌ {error}</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (!dustData) {
@@ -63,7 +44,7 @@ export const DustInfo = ({ dustData, location, time, isLoading, error }: DustInf
           <p>데이터가 없습니다.</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -112,35 +93,14 @@ export const DustInfo = ({ dustData, location, time, isLoading, error }: DustInf
 
       {/* 등급 설명 */}
       <div className="dust-legend">
-        <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#4285F4' }}></div>
-          <span>매우 좋음</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#9CD5F9' }}></div>
-          <span>좋음</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#22B14C' }}></div>
-          <span>양호</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#B5E61D' }}></div>
-          <span>보통</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#FFD400' }}></div>
-          <span>주의</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#FF7F27' }}></div>
-          <span>나쁨</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ backgroundColor: '#F52020' }}></div>
-          <span>매우 나쁨</span>
-        </div>
+        {DUST_LEGEND_ITEMS.map((item) => (
+          <div key={item.label} className="legend-item">
+            <div className="legend-color" style={{ backgroundColor: item.color }}></div>
+            <span>{item.label}</span>
+          </div>
+        ))}
       </div>
     </div>
-  );
-};
+  )
+}
+

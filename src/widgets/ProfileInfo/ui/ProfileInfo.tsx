@@ -1,13 +1,9 @@
-import type { UserProfile } from '@/shared/types/profile'
-import profileCategories from '@/shared/assets/data/profileCategories.json'
+import { useProfileItems } from '../model/hooks'
+import type { ProfileInfoProps } from '../model/types'
 import './ProfileInfo.css'
 
-interface ProfileInfoProps {
-  profile?: UserProfile
-  onEditClick?: () => void
-}
-
 export const ProfileInfo = ({ profile, onEditClick }: ProfileInfoProps) => {
+  const profileItems = useProfileItems(profile)
 
   if (!profile) {
     return (
@@ -20,47 +16,6 @@ export const ProfileInfo = ({ profile, onEditClick }: ProfileInfoProps) => {
         )}
       </div>
     )
-  }
-
-  // 프로필 카테고리에서 라벨 찾기
-  const getLabel = (category: string, value: string): string => {
-    const categoryData = profileCategories.find(cat => cat.category === category)
-    const option = categoryData?.options.find(opt => opt.value === value)
-    return option?.label || value
-  }
-
-  const profileItems: Array<{ label: string; value: string; icon: string }> = []
-
-  if (profile.ageGroup) {
-    profileItems.push({
-      label: '연령대',
-      value: getLabel('연령대', profile.ageGroup),
-      icon: '👤'
-    })
-  }
-
-  if (profile.health && profile.health !== 'normal') {
-    profileItems.push({
-      label: '건강',
-      value: getLabel('건강', profile.health),
-      icon: '🏥'
-    })
-  }
-
-  if (profile.child && profile.child !== 'none') {
-    profileItems.push({
-      label: '아이',
-      value: getLabel('아이', profile.child),
-      icon: '👶'
-    })
-  }
-
-  if (profile.pet && profile.pet !== 'none') {
-    profileItems.push({
-      label: '반려동물',
-      value: getLabel('반려견', profile.pet),
-      icon: profile.pet === 'dog' ? '🐕' : '🐱'
-    })
   }
 
   return (
