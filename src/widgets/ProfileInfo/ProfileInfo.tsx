@@ -1,5 +1,5 @@
 import type { UserProfile } from '@/shared/types/profile'
-import profileCategories from '@/assets/data/profileCategories.json'
+import profileCategories from '@/shared/assets/data/profileCategories.json'
 import './ProfileInfo.css'
 
 interface ProfileInfoProps {

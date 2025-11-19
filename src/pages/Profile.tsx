@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import type { ProfileCategory, UserProfile } from '@/shared/types/profile'
-import profileCategories from '@/assets/data/profileCategories.json'
+import profileCategories from '@/shared/assets/data/profileCategories.json'
 import { Toast } from '@/shared/ui/Toast'
 import './Profile.css'
 
