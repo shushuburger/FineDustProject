@@ -1,5 +1,4 @@
 import { House3D } from '@/widgets/House3D'
-import { DustInfo } from '@/widgets/DustInfo/DustInfo'
 import { ProfileInfo } from '@/widgets/ProfileInfo'
 import { useMediaQuery } from 'react-responsive'
 import { useState, useEffect } from 'react'
@@ -10,7 +9,13 @@ import type { UserProfile } from '@/shared/types/profile'
 import todoListData from '@/shared/assets/data/todoList.json'
 import behavioralGuidelines from '@/shared/assets/data/behavioral_guidelines.json'
 import { registerServiceWorker, scheduleNotificationOnUnload, updateNotificationMission } from '@/shared/utils/notifications'
-import { parseMessage, getExplanationTypeLabel } from '@/shared/utils/messageParser'
+import { DashboardHeader } from '@/components/DashboardHeader'
+import { DashboardSidebar } from '@/components/DashboardSidebar'
+import { ProfileModal } from '@/components/ProfileModal'
+import { BehavioralModal } from '@/components/BehavioralModal'
+import { MobileDustControls } from '@/components/MobileDustControls'
+import { DustMoodOverlay } from '@/components/DustMoodOverlay'
+import { QuickBehavioralButton } from '@/components/QuickBehavioralButton'
 import './Dashboard.css'
 
 interface DashboardProps {
@@ -546,137 +551,21 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
   return (
     <>
       {/* 프로필 설정 모달 */}
-      {showProfileModal && (
-        <div className="profile-modal-overlay" onClick={() => setShowProfileModal(false)}>
-          <div className="profile-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="profile-modal-header">
-              <h2>환영합니다</h2>
-              <button className="profile-modal-close" onClick={() => setShowProfileModal(false)}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-            <div className="profile-modal-body">
-              <p>맞춤형 미세먼지 정보를 제공받기 위해 프로필을 설정해주세요.</p>
-              <button 
-                className="profile-modal-button"
-                onClick={() => {
-                  setShowProfileModal(false)
-                  onNavigateToProfile?.()
-                }}
-              >
-                프로필 설정하러 가기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        onNavigateToProfile={onNavigateToProfile}
+      />
 
     <div className={`smart-home-dashboard ${!isLaptop ? 'mobile-layout' : ''}`}>
-      {/* 상단 헤더 */}
-      <header 
-        className="dashboard-header"
-        style={dustMood ? {
-          backgroundColor: dustMood.bgColor
-        } : {}}
-      >
-        <div className="header-left">
-          <div className="brand-logo">
-            <span>Finedust</span>
-          </div>
-                  <div className="address">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                      <path d="M21 10C21 17 12 23 12 23S3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" strokeWidth="2"/>
-                      <circle cx="12" cy="10" r="3" stroke="currentColor" strokeWidth="2"/>
-                    </svg>
-                    <span>{locationInfo?.address || '위치 정보 로딩 중...'}</span>
-                  </div>
-        </div>
-        
-        <div className="header-center">
-        </div>
-        
-                <div className="header-right">
-                  <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <path d="M3 6H21M7 12H17M9 18H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-
-          {/* 테스트용 미세먼지 등급 버튼 - 데스크톱에서만 표시 */}
-          {isLaptop && (
-            <div style={{ display: 'flex', gap: '8px', marginRight: '16px', flexWrap: 'wrap' }}>
-              <button 
-                onClick={() => setTestPm10(10)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#4285F4', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="매우 좋음 (0-15)"
-              >
-                매우 좋음
-              </button>
-              <button 
-                onClick={() => setTestPm10(20)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#1976D2', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="좋음 (16-30)"
-              >
-                좋음
-              </button>
-              <button 
-                onClick={() => setTestPm10(40)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#22B14C', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="양호 (31-55)"
-              >
-                양호
-              </button>
-              <button 
-                onClick={() => setTestPm10(70)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#B5E61D', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="보통 (56-80)"
-              >
-                보통
-              </button>
-              <button 
-                onClick={() => setTestPm10(100)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#FFD400', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="주의 (81-115)"
-              >
-                주의
-              </button>
-              <button 
-                onClick={() => setTestPm10(130)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#FF7F27', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="나쁨 (116-150)"
-              >
-                나쁨
-              </button>
-              <button 
-                onClick={() => setTestPm10(200)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#F52020', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="매우 나쁨 (151+)"
-              >
-                매우 나쁨
-              </button>
-              <button 
-                onClick={() => setTestPm10(null)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#64748b', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="실제 데이터 사용"
-              >
-                실제값
-              </button>
-            </div>
-          )}
-
-          <div className="user-profile" onClick={onNavigateToProfile} style={{ cursor: 'pointer' }}>
-            <span>Shopia W.</span>
-            <div className="profile-avatar">
-              <div className="avatar-circle"></div>
-            </div>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-              <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader
+        locationInfo={locationInfo}
+        dustMood={dustMood}
+        isLaptop={isLaptop}
+        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        onNavigateToProfile={onNavigateToProfile}
+        onTestPm10Change={setTestPm10}
+      />
 
               <div className="dashboard-content">
                 {/* 중앙 메인 콘텐츠 */}
@@ -691,45 +580,20 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                   
                   {/* 미세먼지 표정 오버레이 및 행동 방안 버튼 컨테이너 */}
                   <div className="mood-and-button-container">
-                    {dustMood && (
-                      <div 
-                        ref={(el) => {
-                          if (el && userProfile?.profile) {
-                            const width = el.offsetWidth
-                            if (width !== buttonWidth) {
-                              setButtonWidth(width)
-                            }
-                          }
-                        }}
-                        className="dust-mood-overlay"
-                        style={{
-                          backgroundColor: dustMood.bgColor,
-                          color: dustMood.color,
-                          borderColor: dustMood.color
-                        }}
-                      >
-                        <div className="mood-emoji">{dustMood.emoji}</div>
-                        <div className="mood-text">{dustMood.text}</div>
-                      </div>
-                    )}
-
-                    {/* 행동 방안 바로보기 버튼 - 프로필이 설정된 경우에만 표시 */}
+                    <DustMoodOverlay 
+                      dustMood={dustMood}
+                      onWidthChange={(width) => {
+                        if (userProfile?.profile && width !== buttonWidth) {
+                          setButtonWidth(width)
+                        }
+                      }}
+                    />
                     {userProfile?.profile && (
-                      <button 
-                        className="quick-behavioral-button"
+                      <QuickBehavioralButton
+                        dustMood={dustMood}
+                        buttonWidth={buttonWidth}
                         onClick={handleShowBehavioralGuide}
-                        title="프로필에 맞는 행동 방안 바로보기"
-                        style={{
-                          ...(buttonWidth ? { width: `${buttonWidth}px` } : {}),
-                          ...(dustMood ? {
-                            backgroundColor: dustMood.bgColor,
-                            color: dustMood.color,
-                            borderColor: dustMood.color
-                          } : {})
-                        }}
-                      >
-                        <span>행동 방안 바로보기</span>
-                      </button>
+                      />
                     )}
                   </div>
 
@@ -752,83 +616,22 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
                   />
                 )}
 
-                {/* 오른쪽 사이드바 - 데스크톱에서는 항상 표시, 모바일에서는 오버레이로 */}
-                <aside className={`right-sidebar ${!isSidebarOpen ? 'collapsed' : ''} ${!isLaptop ? 'mobile-overlay' : ''}`}>
-                      <div className="sidebar-header">
-                        <h2>상세 정보</h2>
-                        <button className="sidebar-close" onClick={() => setIsSidebarOpen(false)}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </button>
-                      </div>
-              
-                      <div className="sidebar-content">
-                        {/* 미세먼지 정보 섹션 */}
-                        <DustInfo 
-                          dustData={dustData || undefined}
-                          location={locationInfo?.address || undefined}
-                          time={currentTime}
-                          isLoading={isLoading}
-                          error={error || undefined}
-                        />
-
-                        {/* 프로필 정보 섹션 - 데스크톱에서만 표시 */}
-                        {isLaptop && (
-                          <ProfileInfo 
-                            profile={userProfile?.profile}
-                            onEditClick={onNavigateToProfile}
-                          />
-                        )}
-                
-                {/* 활동 섹션 */}
-                <div className="activity-section">
-                  <h3>오늘의 미션</h3>
-                  <div className="activity-date">{currentDate}</div>
-                  
-                  {/* 캘린더 */}
-                  <div className="calendar">
-                    <div className="calendar-header">
-                      <div className="day">Su</div>
-                      <div className="day">Mo</div>
-                      <div className="day">Tu</div>
-                      <div className="day">We</div>
-                      <div className="day">Th</div>
-                      <div className="day">Fr</div>
-                      <div className="day">Sa</div>
-                    </div>
-                    <div className="calendar-dates">
-                      {calendarDates.map((date, index) => (
-                        <div key={index} className={`date ${date === new Date().getDate() ? 'active' : ''}`}>
-                          {date > 0 ? date : ''}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* 미션 체크리스트 */}
-                  <div className="mission-checklist">
-                    {randomMissions.map((mission) => {
-                      const priority = getMissionPriority(mission, userProfile?.profile)
-                      const isRecommended = priority > 0
-                      return (
-                        <div key={mission.id} className={`mission-item ${isRecommended ? 'mission-recommended' : ''}`}>
-                          <input type="checkbox" id={`mission${mission.id}`} className="mission-checkbox" />
-                          <label htmlFor={`mission${mission.id}`} className="mission-label">
-                            {isRecommended && (
-                              <span className="mission-priority-badge" title="프로필 기반 추천">
-                                ⭐
-                              </span>
-                            )}
-                            <span className="mission-text">{mission.title}</span>
-                          </label>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
-            </aside>
+                <DashboardSidebar
+                  isOpen={isSidebarOpen}
+                  isLaptop={isLaptop}
+                  onClose={() => setIsSidebarOpen(false)}
+                  dustData={dustData}
+                  locationInfo={locationInfo}
+                  currentTime={currentTime}
+                  isLoading={isLoading}
+                  error={error}
+                  userProfile={userProfile}
+                  onNavigateToProfile={onNavigateToProfile}
+                  currentDate={currentDate}
+                  calendarDates={calendarDates}
+                  randomMissions={randomMissions}
+                  getMissionPriority={getMissionPriority}
+                />
             
             {/* 사이드바가 접혔을 때 보여줄 토글 버튼 - 데스크톱에서만 */}
             {isLaptop && !isSidebarOpen && (
@@ -841,226 +644,22 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
           </div>
         </div>
 
-      {/* 모바일 미세먼지 등급 조정 플로팅 버튼 */}
       {!isLaptop && (
-        <>
-          {/* 플로팅 버튼 토글 */}
-          <button
-            className="mobile-dust-control-toggle"
-            onClick={() => setShowMobileDustControls(!showMobileDustControls)}
-            title="미세먼지 등급 조정"
-          >
-            {showMobileDustControls ? (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                <path d="m296-80-56-56 240-240 240 240-56 56-184-184L296-80Zm184-504L240-824l56-56 184 184 184-184 56 56-240 240Z"/>
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                <path d="M480-80 240-320l57-57 183 183 183-183 57 57L480-80ZM298-584l-58-56 240-240 240 240-58 56-182-182-182 182Z"/>
-              </svg>
-            )}
-          </button>
-
-          {/* 플로팅 컨트롤 패널 */}
-          {showMobileDustControls && (
-            <div className="mobile-dust-control-panel">
-              <div className="mobile-dust-control-header">
-                <span>미세먼지 등급 조정</span>
-                <button 
-                  className="mobile-dust-control-close"
-                  onClick={() => setShowMobileDustControls(false)}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-              <div className="mobile-dust-control-buttons">
-                <button 
-                  onClick={() => setTestPm10(10)} 
-                  className={`mobile-dust-button ${testPm10 === 10 ? 'active' : ''}`}
-                  style={{ background: '#4285F4' }}
-                  title="매우 좋음 (0-15)"
-                >
-                  매우 좋음
-                </button>
-                <button 
-                  onClick={() => setTestPm10(20)} 
-                  className={`mobile-dust-button ${testPm10 === 20 ? 'active' : ''}`}
-                  style={{ background: '#1976D2' }}
-                  title="좋음 (16-30)"
-                >
-                  좋음
-                </button>
-                <button 
-                  onClick={() => setTestPm10(40)} 
-                  className={`mobile-dust-button ${testPm10 === 40 ? 'active' : ''}`}
-                  style={{ background: '#22B14C' }}
-                  title="양호 (31-55)"
-                >
-                  양호
-                </button>
-                <button 
-                  onClick={() => setTestPm10(70)} 
-                  className={`mobile-dust-button ${testPm10 === 70 ? 'active' : ''}`}
-                  style={{ background: '#B5E61D' }}
-                  title="보통 (56-80)"
-                >
-                  보통
-                </button>
-                <button 
-                  onClick={() => setTestPm10(100)} 
-                  className={`mobile-dust-button ${testPm10 === 100 ? 'active' : ''}`}
-                  style={{ background: '#FFD400' }}
-                  title="주의 (81-115)"
-                >
-                  주의
-                </button>
-                <button 
-                  onClick={() => setTestPm10(130)} 
-                  className={`mobile-dust-button ${testPm10 === 130 ? 'active' : ''}`}
-                  style={{ background: '#FF7F27' }}
-                  title="나쁨 (116-150)"
-                >
-                  나쁨
-                </button>
-                <button 
-                  onClick={() => setTestPm10(200)} 
-                  className={`mobile-dust-button ${testPm10 === 200 ? 'active' : ''}`}
-                  style={{ background: '#F52020' }}
-                  title="매우 나쁨 (151+)"
-                >
-                  매우 나쁨
-                </button>
-                <button 
-                  onClick={() => setTestPm10(null)} 
-                  className={`mobile-dust-button ${testPm10 === null ? 'active' : ''}`}
-                  style={{ background: '#64748b' }}
-                  title="실제 데이터 사용"
-                >
-                  실제값
-                </button>
-              </div>
-            </div>
-          )}
-        </>
+        <MobileDustControls
+          isOpen={showMobileDustControls}
+          testPm10={testPm10}
+          onToggle={() => setShowMobileDustControls(!showMobileDustControls)}
+          onClose={() => setShowMobileDustControls(false)}
+          onTestPm10Change={setTestPm10}
+        />
       )}
 
-      {/* 행동 방안 모달 */}
-      {showBehavioralModal && (
-        <div className="behavioral-modal-overlay" onClick={() => setShowBehavioralModal(false)}>
-          <div className="behavioral-modal-content behavioral-modal-content-all" onClick={(e) => e.stopPropagation()}>
-            <div 
-              className="behavioral-modal-header"
-              style={dustMood ? {
-                backgroundColor: dustMood.bgColor,
-                borderBottomColor: dustMood.color
-              } : {}}
-            >
-              <div>
-                <h2 className="behavioral-modal-title">전체 행동 방안</h2>
-                <p className="behavioral-modal-subtitle">프로필에 맞는 행동 방안이 상단에 표시됩니다</p>
-              </div>
-              <button className="behavioral-modal-close" onClick={() => setShowBehavioralModal(false)}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-            <div className="behavioral-modal-body behavioral-modal-body-all">
-              {behavioralModalGuides.map((guide, guideIndex) => (
-                <div 
-                  key={guideIndex} 
-                  className="behavioral-guide-section"
-                  style={guide.profileApplied.length > 0 && dustMood ? {
-                    background: `linear-gradient(135deg, ${dustMood.bgColor} 0%, #f8fafc 100%)`,
-                    borderColor: dustMood.color,
-                    borderWidth: '2px'
-                  } : {}}
-                >
-                  <div className="behavioral-guide-header">
-                    <h3 
-                      className="behavioral-guide-title"
-                      style={guide.profileApplied.length > 0 && dustMood ? {
-                        color: dustMood.color
-                      } : {}}
-                    >
-                      {guide.title}
-                    </h3>
-                    {guide.profileApplied.length > 0 && (
-                      <div className="behavioral-modal-profile-badge">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        <span>프로필 반영: {guide.profileApplied.join(', ')}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="behavioral-guide-content">
-                    {guide.content.map((item, index) => {
-                      const parsed = parseMessage(item)
-                      
-                      // 링크만 있는 경우
-                      if (parsed.isLink && !parsed.action) {
-                        return (
-                          <p 
-                            key={index} 
-                            className="behavioral-modal-text"
-                            style={dustMood ? { borderLeftColor: dustMood.color } : {}}
-                          >
-                            {parsed.linkUrl && (
-                              <a 
-                                href={parsed.linkUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="behavioral-modal-link"
-                                style={dustMood ? { color: dustMood.color } : {}}
-                              >
-                                {parsed.linkText}
-                              </a>
-                            )}
-                          </p>
-                        )
-                      }
-                      
-                      // 일반 메시지 (action + explanation)
-                      return (
-                        <div 
-                          key={index} 
-                          className="behavioral-modal-text"
-                          style={dustMood ? { borderLeftColor: dustMood.color } : {}}
-                        >
-                          <div className="behavioral-modal-action">{parsed.action}</div>
-                          {parsed.isLink && parsed.linkUrl && (
-                            <a 
-                              href={parsed.linkUrl} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="behavioral-modal-link"
-                              style={dustMood ? { color: dustMood.color } : {}}
-                            >
-                              {parsed.linkText}
-                            </a>
-                          )}
-                          {parsed.explanation && parsed.explanationType && (
-                            <>
-                              <div className={`behavioral-modal-explanation-label behavioral-modal-explanation-label-${parsed.explanationType}`}>
-                                {getExplanationTypeLabel(parsed.explanationType)}
-                              </div>
-                              <div className="behavioral-modal-explanation-text">{parsed.explanation}</div>
-                            </>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      <BehavioralModal
+        isOpen={showBehavioralModal}
+        guides={behavioralModalGuides}
+        dustMood={dustMood}
+        onClose={() => setShowBehavioralModal(false)}
+      />
     </>
   )
 }
