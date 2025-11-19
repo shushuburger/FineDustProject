@@ -153,43 +153,43 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
         emoji: '😊', 
         text: '상쾌한 하루!', 
         color: '#4285F4', 
-        bgColor: '#D0E8F2' 
+        bgColor: '#B3D5F5' 
       },
       '좋음': { 
         emoji: '🙂', 
         text: '좋은 공기!', 
         color: '#1976D2', 
-        bgColor: '#E3F2FD' 
+        bgColor: '#90C5F0' 
       },
       '양호': { 
         emoji: '😐', 
         text: '괜찮아요', 
         color: '#22B14C', 
-        bgColor: '#F1F8E9' 
+        bgColor: '#A8E0B8' 
       },
       '보통': { 
         emoji: '😕', 
         text: '조금 주의', 
         color: '#B5E61D', 
-        bgColor: '#FFF8E1' 
+        bgColor: '#E5F5A8' 
       },
       '주의': { 
         emoji: '😟', 
         text: '마스크 권장', 
         color: '#FFD400', 
-        bgColor: '#FFF3E0' 
+        bgColor: '#FFE880' 
       },
       '나쁨': { 
         emoji: '😰', 
         text: '실외 활동 자제', 
         color: '#FF7F27', 
-        bgColor: '#FFEBEE' 
+        bgColor: '#FFB87A' 
       },
       '매우 나쁨': { 
         emoji: '😱', 
         text: '실외 금지!', 
         color: '#F52020', 
-        bgColor: '#FCE4EC' 
+        bgColor: '#F88B8B' 
       }
     };
     return moodMap[grade] || { emoji: '😐', text: '정보 없음', color: '#6B7280', bgColor: '#F9FAFB' };
@@ -606,31 +606,52 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
 
           {/* 테스트용 미세먼지 등급 버튼 - 데스크톱에서만 표시 */}
           {isLaptop && (
-            <div style={{ display: 'flex', gap: '8px', marginRight: '16px' }}>
+            <div style={{ display: 'flex', gap: '8px', marginRight: '16px', flexWrap: 'wrap' }}>
+              <button 
+                onClick={() => setTestPm10(10)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#4285F4', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="매우 좋음 (0-15)"
+              >
+                매우 좋음
+              </button>
               <button 
                 onClick={() => setTestPm10(20)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="좋음 (0-30)"
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#1976D2', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="좋음 (16-30)"
               >
                 좋음
               </button>
               <button 
-                onClick={() => setTestPm10(60)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#22b14c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="보통 (31-80)"
+                onClick={() => setTestPm10(40)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#22B14C', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="양호 (31-55)"
+              >
+                양호
+              </button>
+              <button 
+                onClick={() => setTestPm10(70)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#B5E61D', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="보통 (56-80)"
               >
                 보통
               </button>
               <button 
-                onClick={() => setTestPm10(110)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#ffd400', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                title="나쁨 (81-150)"
+                onClick={() => setTestPm10(100)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#FFD400', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="주의 (81-115)"
+              >
+                주의
+              </button>
+              <button 
+                onClick={() => setTestPm10(130)} 
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#FF7F27', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                title="나쁨 (116-150)"
               >
                 나쁨
               </button>
               <button 
                 onClick={() => setTestPm10(200)} 
-                style={{ padding: '4px 8px', fontSize: '11px', background: '#f52020', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                style={{ padding: '4px 8px', fontSize: '11px', background: '#F52020', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 title="매우 나쁨 (151+)"
               >
                 매우 나쁨
@@ -856,33 +877,57 @@ export const Dashboard = ({ onNavigateToProfile }: DashboardProps) => {
               </div>
               <div className="mobile-dust-control-buttons">
                 <button 
+                  onClick={() => setTestPm10(10)} 
+                  className={`mobile-dust-button ${testPm10 === 10 ? 'active' : ''}`}
+                  style={{ background: '#4285F4' }}
+                  title="매우 좋음 (0-15)"
+                >
+                  매우 좋음
+                </button>
+                <button 
                   onClick={() => setTestPm10(20)} 
                   className={`mobile-dust-button ${testPm10 === 20 ? 'active' : ''}`}
-                  style={{ background: '#10b981' }}
-                  title="좋음 (0-30)"
+                  style={{ background: '#1976D2' }}
+                  title="좋음 (16-30)"
                 >
                   좋음
                 </button>
                 <button 
-                  onClick={() => setTestPm10(60)} 
-                  className={`mobile-dust-button ${testPm10 === 60 ? 'active' : ''}`}
-                  style={{ background: '#22b14c' }}
-                  title="보통 (31-80)"
+                  onClick={() => setTestPm10(40)} 
+                  className={`mobile-dust-button ${testPm10 === 40 ? 'active' : ''}`}
+                  style={{ background: '#22B14C' }}
+                  title="양호 (31-55)"
+                >
+                  양호
+                </button>
+                <button 
+                  onClick={() => setTestPm10(70)} 
+                  className={`mobile-dust-button ${testPm10 === 70 ? 'active' : ''}`}
+                  style={{ background: '#B5E61D' }}
+                  title="보통 (56-80)"
                 >
                   보통
                 </button>
                 <button 
-                  onClick={() => setTestPm10(110)} 
-                  className={`mobile-dust-button ${testPm10 === 110 ? 'active' : ''}`}
-                  style={{ background: '#ffd400' }}
-                  title="나쁨 (81-150)"
+                  onClick={() => setTestPm10(100)} 
+                  className={`mobile-dust-button ${testPm10 === 100 ? 'active' : ''}`}
+                  style={{ background: '#FFD400' }}
+                  title="주의 (81-115)"
+                >
+                  주의
+                </button>
+                <button 
+                  onClick={() => setTestPm10(130)} 
+                  className={`mobile-dust-button ${testPm10 === 130 ? 'active' : ''}`}
+                  style={{ background: '#FF7F27' }}
+                  title="나쁨 (116-150)"
                 >
                   나쁨
                 </button>
                 <button 
                   onClick={() => setTestPm10(200)} 
                   className={`mobile-dust-button ${testPm10 === 200 ? 'active' : ''}`}
-                  style={{ background: '#f52020' }}
+                  style={{ background: '#F52020' }}
                   title="매우 나쁨 (151+)"
                 >
                   매우 나쁨

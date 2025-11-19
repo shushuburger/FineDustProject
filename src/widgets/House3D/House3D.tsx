@@ -56,18 +56,18 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
 
   // 미세먼지 등급에 따른 배경색 가져오기
   const getDustBgColor = (pm10?: number): string => {
-    if (!pm10) return '#E3F2FD'
+    if (!pm10) return '#90C5F0'
     const grade = getPM10Grade(pm10)
     const bgColorMap: Record<DustGrade, string> = {
-      '매우 좋음': '#D0E8F2',
-      '좋음': '#E3F2FD',
-      '양호': '#F1F8E9',
-      '보통': '#FFF8E1',
-      '주의': '#FFF3E0',
-      '나쁨': '#FFEBEE',
-      '매우 나쁨': '#FCE4EC'
+      '매우 좋음': '#B3D5F5',
+      '좋음': '#90C5F0',
+      '양호': '#A8E0B8',
+      '보통': '#E5F5A8',
+      '주의': '#FFE880',
+      '나쁨': '#FFB87A',
+      '매우 나쁨': '#F88B8B'
     }
-    return bgColorMap[grade] || '#E3F2FD'
+    return bgColorMap[grade] || '#90C5F0'
   }
 
   // 스플라인 로드 후 초기값 설정 및 모달 활성화
