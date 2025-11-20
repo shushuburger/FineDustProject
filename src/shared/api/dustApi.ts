@@ -7,6 +7,13 @@ const KAKAO_API_KEY = '6bc3bb7db30d6057283b9bf04a9fec97';
 // Kakao 위치 API 엔드포인트
 const KAKAO_GEO_API_URL = 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json';
 
+// 기본 위치 좌표 (maxAttempts 초과 시 사용)
+const DEFAULT_LOCATION = {
+  latitude: 36.3665,
+  longitude: 127.3443,
+  address: '대전광역시 유성구'
+};
+
 /**
  * 좌표를 주소로 변환하는 함수
  */
@@ -54,7 +61,7 @@ export const getCurrentLocation = (): Promise<LocationInfo> => {
 
     let bestPosition: GeolocationPosition | null = null;
     let attempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 5;
     const targetAccuracy = 50; // 50미터 이하의 정확도를 목표로 함
 
     const tryGetPosition = () => {
@@ -70,6 +77,32 @@ export const getCurrentLocation = (): Promise<LocationInfo> => {
 
           // 목표 정확도에 도달했거나 최대 시도 횟수에 도달한 경우
           if (accuracy <= targetAccuracy || attempts >= maxAttempts) {
+            // 최대 시도 횟수 초과 + 목표 정확도 미달 시 기본 좌표 사용
+            if (attempts >= maxAttempts && bestPosition && bestPosition.coords.accuracy > targetAccuracy) {
+              console.warn(`⚠️ 최대 시도 횟수(${maxAttempts}회) 초과 및 목표 정확도(${targetAccuracy}m) 미달`);
+              console.warn(`   최종 정확도: ${bestPosition.coords.accuracy.toFixed(1)}m`);
+              console.log(`📍 기본 위치로 설정: ${DEFAULT_LOCATION.address}`);
+              
+              try {
+                const address = await getAddressFromCoords(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
+                resolve({
+                  latitude: DEFAULT_LOCATION.latitude,
+                  longitude: DEFAULT_LOCATION.longitude,
+                  address
+                });
+                return;
+              } catch {
+                // 주소 변환 실패 시 기본 주소 사용
+                resolve({
+                  latitude: DEFAULT_LOCATION.latitude,
+                  longitude: DEFAULT_LOCATION.longitude,
+                  address: DEFAULT_LOCATION.address
+                });
+                return;
+              }
+            }
+            
+            // 정상적으로 위치를 얻은 경우
             if (bestPosition) {
               try {
                 const lat = bestPosition.coords.latitude;
@@ -87,7 +120,24 @@ export const getCurrentLocation = (): Promise<LocationInfo> => {
                 reject(error);
               }
             } else {
-              reject(new Error('정확한 위치를 가져올 수 없습니다.'));
+              // bestPosition이 없으면 기본 좌표 사용
+              console.warn(`⚠️ 위치 정보를 가져올 수 없어 기본 위치로 설정합니다.`);
+              console.log(`📍 기본 위치로 설정: ${DEFAULT_LOCATION.address}`);
+              
+              try {
+                const address = await getAddressFromCoords(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
+                resolve({
+                  latitude: DEFAULT_LOCATION.latitude,
+                  longitude: DEFAULT_LOCATION.longitude,
+                  address
+                });
+              } catch {
+                resolve({
+                  latitude: DEFAULT_LOCATION.latitude,
+                  longitude: DEFAULT_LOCATION.longitude,
+                  address: DEFAULT_LOCATION.address
+                });
+              }
             }
           } else {
             // 정확도가 부족하면 다시 시도 (1초 대기)
@@ -116,7 +166,27 @@ export const getCurrentLocation = (): Promise<LocationInfo> => {
               }
             })();
           } else {
-            reject(new Error(`위치 정보 오류: ${error.message}`));
+            // 위치 정보를 전혀 얻지 못한 경우 기본 좌표 사용
+            console.warn(`⚠️ 위치 정보 오류: ${error.message}`);
+            console.log(`📍 기본 위치로 설정: ${DEFAULT_LOCATION.address}`);
+            
+            (async () => {
+              try {
+                const address = await getAddressFromCoords(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
+                resolve({
+                  latitude: DEFAULT_LOCATION.latitude,
+                  longitude: DEFAULT_LOCATION.longitude,
+                  address
+                });
+              } catch {
+                // 주소 변환 실패 시 기본 주소 사용
+                resolve({
+                  latitude: DEFAULT_LOCATION.latitude,
+                  longitude: DEFAULT_LOCATION.longitude,
+                  address: DEFAULT_LOCATION.address
+                });
+              }
+            })();
           }
         },
         {
