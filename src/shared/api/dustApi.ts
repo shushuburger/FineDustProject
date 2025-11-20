@@ -42,7 +42,8 @@ export const getAddressFromCoords = async (lat: number, lon: number): Promise<st
 };
 
 /**
- * 현재 위치를 가져오는 함수
+ * 더 정확한 위치를 가져오는 함수
+ * GPS 신호를 기다려 최대한 정확한 위치를 얻습니다.
  */
 export const getCurrentLocation = (): Promise<LocationInfo> => {
   return new Promise((resolve, reject) => {
@@ -51,31 +52,82 @@ export const getCurrentLocation = (): Promise<LocationInfo> => {
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          const address = await getAddressFromCoords(lat, lon);
-          
-          resolve({
-            latitude: lat,
-            longitude: lon,
-            address
-          });
-        } catch (error) {
-          reject(error);
+    let bestPosition: GeolocationPosition | null = null;
+    let attempts = 0;
+    const maxAttempts = 3;
+    const targetAccuracy = 50; // 50미터 이하의 정확도를 목표로 함
+
+    const tryGetPosition = () => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          attempts++;
+          const accuracy = position.coords.accuracy;
+
+          // 더 정확한 위치를 찾았거나, 목표 정확도에 도달한 경우
+          if (!bestPosition || accuracy < bestPosition.coords.accuracy) {
+            bestPosition = position;
+          }
+
+          // 목표 정확도에 도달했거나 최대 시도 횟수에 도달한 경우
+          if (accuracy <= targetAccuracy || attempts >= maxAttempts) {
+            if (bestPosition) {
+              try {
+                const lat = bestPosition.coords.latitude;
+                const lon = bestPosition.coords.longitude;
+                const address = await getAddressFromCoords(lat, lon);
+                
+                console.log(`📍 위치 획득 완료 (정확도: ${bestPosition.coords.accuracy.toFixed(1)}m, 시도: ${attempts}회)`);
+                
+                resolve({
+                  latitude: lat,
+                  longitude: lon,
+                  address
+                });
+              } catch (error) {
+                reject(error);
+              }
+            } else {
+              reject(new Error('정확한 위치를 가져올 수 없습니다.'));
+            }
+          } else {
+            // 정확도가 부족하면 다시 시도 (1초 대기)
+            console.log(`📍 위치 정확도 개선 중... (현재: ${accuracy.toFixed(1)}m, 목표: ${targetAccuracy}m 이하)`);
+            setTimeout(tryGetPosition, 1000);
+          }
+        },
+        (error) => {
+          if (bestPosition) {
+            // 이전에 얻은 위치가 있으면 그것을 사용
+            (async () => {
+              try {
+                const lat = bestPosition!.coords.latitude;
+                const lon = bestPosition!.coords.longitude;
+                const address = await getAddressFromCoords(lat, lon);
+                
+                console.log(`📍 위치 획득 완료 (정확도: ${bestPosition!.coords.accuracy.toFixed(1)}m, 경고: ${error.message})`);
+                
+                resolve({
+                  latitude: lat,
+                  longitude: lon,
+                  address
+                });
+              } catch (err) {
+                reject(err);
+              }
+            })();
+          } else {
+            reject(new Error(`위치 정보 오류: ${error.message}`));
+          }
+        },
+        {
+          enableHighAccuracy: true,  // GPS 우선 사용
+          timeout: 20000,             // 20초로 증가 (GPS 신호 대기)
+          maximumAge: 0               // 캐시된 위치 사용 안 함 (항상 최신 위치)
         }
-      },
-      (error) => {
-        reject(new Error(`위치 정보 오류: ${error.message}`));
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000 // 5분
-      }
-    );
+      );
+    };
+
+    tryGetPosition();
   });
 };
 
