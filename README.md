@@ -38,6 +38,13 @@ FineDustProject는 미세먼지로부터 건강을 지키기 위한 **실용적�
 - **Service Worker 알림**: 브라우저를 닫은 후에도 백그라운드에서 알림을 통해 사용자에게 미션을 상기시킴
 - **프로필 관리**: 사용자 정보를 localStorage에 저장하여 지속적인 개인화 서비스 제공
 
+### 사용 방법
+
+1. **프로필 설정**: 우측 상단 프로필 아이콘을 클릭하여 건강 상태, 연령대, 자녀 유무, 반려동물 보유 여부 등을 설정합니다.
+2. **3D 하우스 탐색**: 메인 화면의 3D 하우스에서 객체를 클릭하여 해당 상황에 맞는 행동 방안을 확인합니다.
+3. **미세먼지 정보 확인**: 좌측 사이드바에서 현재 위치의 미세먼지 농도와 등급을 확인합니다.
+4. **행동 방안 확인**: 3D 하우스에서 객체를 클릭하거나 Dashboard의 전체 행동 방안 보기를 확인합니다.
+
 ## 🛠️ 기술 스택
 
 ### 주요 구현 언어 및 프레임워크
@@ -164,27 +171,21 @@ FineDustProject/
 │   │       │   └── hooks.ts        # 커스텀 훅 (useProfileItems)
 │   │       └── index.ts            # Export
 │   ├── components/        # 재사용 가능한 UI 컴포넌트들 (ui/model 구조)
-│   │   ├── DashboardHeader/
-│   │   │   ├── ui/
-│   │   │   │   └── DashboardHeader.tsx
-│   │   │   ├── model/
-│   │   │   │   ├── types.ts
-│   │   │   │   └── constants.ts
-│   │   │   └── index.ts
-│   │   ├── Calendar/
-│   │   ├── MissionList/
-│   │   ├── BehavioralModal/
-│   │   ├── DustMoodOverlay/
-│   │   ├── QuickBehavioralButton/
-│   │   ├── DashboardSidebar/
-│   │   ├── MobileDustControls/
-│   │   ├── ProfileHeader/
-│   │   ├── ProfileModal/
-│   │   ├── ProfileNameEditor/
-│   │   ├── ProfileCategoryCard/
-│   │   ├── ProfileCategoryList/
-│   │   ├── ProfileCategoryModal/
-│   │   └── SaveButton/
+│   │   ├── DashboardHeader/      # 대시보드 헤더 (날짜, 시간 표시)
+│   │   ├── DashboardSidebar/     # 대시보드 사이드바 (프로필, 미세먼지 정보)
+│   │   ├── Calendar/             # 캘린더 컴포넌트
+│   │   ├── MissionList/          # 미션 목록 컴포넌트
+│   │   ├── BehavioralModal/      # 행동 방안 모달
+│   │   ├── DustMoodOverlay/      # 미세먼지 분위기 오버레이
+│   │   ├── QuickBehavioralButton/ # 빠른 행동 방안 버튼
+│   │   ├── MobileDustControls/   # 모바일 미세먼지 컨트롤
+│   │   ├── ProfileHeader/        # 프로필 헤더
+│   │   ├── ProfileModal/         # 프로필 모달
+│   │   ├── ProfileNameEditor/    # 프로필 이름 편집기
+│   │   ├── ProfileCategoryCard/  # 프로필 카테고리 카드
+│   │   ├── ProfileCategoryList/  # 프로필 카테고리 목록
+│   │   ├── ProfileCategoryModal/ # 프로필 카테고리 모달
+│   │   └── SaveButton/           # 저장 버튼
 │   │       # 각 컴포넌트는 ui/ (UI 컴포넌트)와 model/ (타입, 상수, 훅, 로직)로 분리
 │   ├── features/          # 비즈니스 기능들
 │   ├── entities/          # 비즈니스 엔티티들
@@ -209,9 +210,14 @@ FineDustProject/
 │   │           ├── profileCategories.json
 │   │           └── todoList.json
 │   └── main.tsx           # 애플리케이션 진입점
-├── package.json
+├── package.json           # 프로젝트 의존성 및 스크립트
+├── package-lock.json      # 의존성 잠금 파일
 ├── vite.config.ts         # Vite 설정 (경로 별칭 포함)
 ├── vercel.json            # Vercel 배포 설정
+├── tsconfig.json          # TypeScript 설정
+├── tsconfig.app.json      # 앱용 TypeScript 설정
+├── tsconfig.node.json     # Node.js용 TypeScript 설정
+├── eslint.config.js       # ESLint 설정
 └── README.md
 ```
 
@@ -236,6 +242,22 @@ FineDustProject/
 - **CSS 파일**: 각 컴포넌트의 `ui/` 폴더에 위치
 
 이 구조를 통해 **관심사의 분리**를 명확히 하고, **재사용성**과 **유지보수성**을 향상시킵니다.
+
+### 주요 컴포넌트 설명
+
+#### Pages
+- **Dashboard**: 메인 대시보드 페이지 (3D 하우스, 미세먼지 정보, 미션 목록 등)
+- **Profile**: 사용자 프로필 설정 페이지 (건강 상태, 연령대, 자녀, 반려동물 등)
+
+#### Widgets
+- **House3D**: Spline 기반 3D 인터랙티브 하우스 위젯
+- **DustInfo**: 미세먼지 농도 및 등급 정보 위젯
+- **ProfileInfo**: 사용자 프로필 정보 요약 위젯
+
+#### 주요 Components
+- **BehavioralModal**: 행동 방안 상세 정보를 표시하는 모달
+- **MissionList**: 미션 목록 표시
+- **DashboardSidebar**: 프로필 및 미세먼지 정보 사이드바
 
 ## 🚀 배포 (Vercel)
 
@@ -301,11 +323,26 @@ import { Button } from '@/shared/ui/Button'
   - 측정소별 데이터 조회
   - 스크립트를 통해 주기적으로 데이터 업데이트 가능
 
+- **에어코리아 Excel 데이터**
+  - API 서버 불안정 시 대체용 데이터
+  - `public/data/` 폴더에 월별 Excel 파일 저장
+  - `scripts/importAirQualityFromXlsx.mjs` 스크립트로 JSON 변환
+
 ### 건강 정보 소스 (행동 방안 작성시 참고)
 
 - **질병관리청**: 호흡기 질환 예방 행동 지침 및 공식 정보 링크 제공
 - **대한천식알레르기학회**: 천식 및 알레르기 환자를 위한 전문 가이드라인 링크 제공
 - **각종 논문 탐색**: 미세먼지 취약 계층, 카테고리별 관련 논문 탐색
+
+### 데이터 파일 구조
+
+- **`behavioral_guidelines.json`**: 행동 방안 가이드라인 데이터
+  - 미세먼지 등급별(baseMessages) 및 프로필 조건별(conditionalMessages) 행동 방안
+  - 카테고리: window, dog, mask, exercise, cleaning, air_purifier 등
+- **`profileCategories.json`**: 프로필 카테고리 정의
+- **`todoList.json`**: Todo 목록 데이터
+- **`air-quality.json`**: 대기질 데이터 (API 또는 Excel에서 생성)
+- **`stations_with_coords.json`**: 측정소 좌표 정보
 
 ## 🎨 행동 방안 설명 분류 시스템
 
