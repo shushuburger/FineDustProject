@@ -44,6 +44,7 @@ export const House3D = ({ pm10Value, userHealth, userAge, userChild, userPet }: 
     if (splineApp && isReadyForModal) {
       try {
         const value = splineApp.getVariable('nowObject')
+        console.log('nowObject:', value)
         if (value !== undefined) {
           const objectName = String(value)
           setNowSelectedObject(objectName)

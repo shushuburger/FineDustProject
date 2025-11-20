@@ -64,6 +64,7 @@ export const OBJECT_NAMES: Record<string, string> = {
   fan: '공기청정기',
   door: '출입문',
   refrigeator: '냉장고',
-  clean: '청소'
+  clean: '청소',
+  bed: '침대'
 }
 

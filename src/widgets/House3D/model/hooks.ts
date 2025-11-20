@@ -46,9 +46,14 @@ export const useBehavioralModal = ({
   useEffect(() => {
     if (!isReadyForModal || !splineApp) return
 
+    console.log('nowSelectedObject:', nowSelectedObject)
+    console.log('guides keys:', Object.keys(behavioralGuidelines.guides))
+    console.log('bed in guides:', 'bed' in behavioralGuidelines.guides)
+    
     if (nowSelectedObject !== 'none' && behavioralGuidelines.guides[nowSelectedObject as keyof typeof behavioralGuidelines.guides]) {
       const dustLevel = getDustLevel(pm10Value)
       const guide = behavioralGuidelines.guides[nowSelectedObject as keyof typeof behavioralGuidelines.guides]
+      console.log('Guide found:', guide)
       let content = [...guide.baseMessages[dustLevel]]
       const profileApplied: string[] = []
       
